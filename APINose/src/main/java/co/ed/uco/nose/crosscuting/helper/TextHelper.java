@@ -5,7 +5,7 @@ public final class TextHelper {
 	//Valor por defecto
 	private static final String Empty = "";
 	
-	//Constructor privado
+    // Constructor privado para evitar instanciación
 	private TextHelper() {
 	}
 	
@@ -29,4 +29,9 @@ public final class TextHelper {
 	public static boolean isEmpty(final String value) {
 		return Empty.equals(getDefault(value));
 	}
+	
+	// Verifica si una cadena es nula, vacía o contiene solo espacios en blanco
+    public static boolean isNullOrWhitespace(final String value) {
+        return ObjectHelper.isNull(value) || value.trim().isEmpty();
+    }
 }

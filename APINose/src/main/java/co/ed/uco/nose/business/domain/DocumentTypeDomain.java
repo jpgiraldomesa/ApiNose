@@ -4,29 +4,29 @@ import java.util.UUID;
 import co.ed.uco.nose.crosscuting.helper.TextHelper;
 import co.ed.uco.nose.crosscuting.helper.UUIDHelper;
 
-public final class CountryDomain extends Domain{
-	
+public final class DocumentTypeDomain extends Domain{
+		
 	//Atributos
 	private String name;
-	
+		
 	//Constructor que asigna un ID y un nombre por defecto
-	public CountryDomain() {
+	public DocumentTypeDomain() {
 		super(UUIDHelper.getUUIDHelper().getDefault());
 		setName(TextHelper.getDefault());
 	}
-	
+		
 	//Constructor que asigna un ID por defecto y un nombre
-	public CountryDomain(final UUID id) {
+	public DocumentTypeDomain(final UUID id) {
 		super(id);
 		setName(TextHelper.getDefault());
 	}
-	
+		
 	//Constructor que asigna un ID y un nombre
-	public CountryDomain(final UUID id, final String name) {
+	public DocumentTypeDomain(final UUID id, final String name) {
 		super(id);
 		setName(name);
 	}
-	
+		
 	//Getter
 	public String getName() {
 		return name;

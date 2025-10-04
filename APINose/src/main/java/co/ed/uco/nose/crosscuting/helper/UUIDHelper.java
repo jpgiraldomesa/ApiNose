@@ -19,7 +19,7 @@ public final class UUIDHelper {
 	}
 	
 	//Retorna el valor por defecto
-	public java.util.UUID getDefault() {
+	public static java.util.UUID getDefault() {
 		return getFromString(UUID_DEFAULT_AS_STRING);
 	}
 	
@@ -29,7 +29,7 @@ public final class UUIDHelper {
 	}
 	
 	//Si la cadena no es un UUID válido, retorna el valor por defecto
-	public UUID getFromString(final String uuidAsString) {
+	public static UUID getFromString(final String uuidAsString) {
 		return (TextHelper.isEmpty(uuidAsString) ? getDefault() : UUID.fromString(uuidAsString));
 	}
 }
