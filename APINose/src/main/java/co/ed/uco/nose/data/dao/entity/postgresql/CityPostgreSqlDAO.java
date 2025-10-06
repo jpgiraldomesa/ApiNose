@@ -31,5 +31,4 @@ public final class CityPostgreSqlDAO extends SqlConnection implements CityDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

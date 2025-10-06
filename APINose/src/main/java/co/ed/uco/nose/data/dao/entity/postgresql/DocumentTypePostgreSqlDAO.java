@@ -1,12 +1,19 @@
 package co.ed.uco.nose.data.dao.entity.postgresql;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
 
 import co.ed.uco.nose.data.dao.entity.DocumentTypeDAO;
+import co.ed.uco.nose.data.dao.entity.SqlConnection;
 import co.ed.uco.nose.entity.DocumentTypeEntity;
 
-public final class DocumentTypePostgreSqlDAO implements DocumentTypeDAO {
+public final class DocumentTypePostgreSqlDAO extends SqlConnection implements DocumentTypeDAO {
+
+	protected DocumentTypePostgreSqlDAO(Connection connection) {
+		super(connection);
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public List<DocumentTypeEntity> findAll() {

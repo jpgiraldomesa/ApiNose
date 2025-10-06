@@ -2,7 +2,8 @@ package co.ed.uco.nose.dto;
 
 import java.util.UUID;
 
-public class UserDTO {
+
+public final class UserDTO {
 
     private UUID id;
     private DocumentTypeDTO documentType;

@@ -15,9 +15,9 @@ public final class EmailHelper {
     }
 
     // Retorna el valor por defecto si es nulo, vacío o inválido, utilizando TextHelper para trim
-    public static String getDefaultWhithValidation(final String email) {
-        String trimmedEmail = TextHelper.getDefaultWhithTrim(email);
-        return (TextHelper.isNullOrWhitespace(trimmedEmail) || !isValidEmail(trimmedEmail)) ? getDefault() : trimmedEmail;
+    public static String getDefaultWithValidation(final String email) {
+        String trimmedEmail = TextHelper.getDefaultWithTrim(email);
+        return (TextHelper.isNullOrWitespace(trimmedEmail) || !isValidEmail(trimmedEmail)) ? getDefault() : trimmedEmail;
     }
 
     // Validación básica de formato de correo electrónico

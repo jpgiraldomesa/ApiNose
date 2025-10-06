@@ -50,14 +50,14 @@ public final class NoseException extends RuntimeException {
 	}
 	
 	private void setUserMessage(final String userMessage) {
-		this.userMessage = TextHelper.getDefaultWhithTrim(userMessage);
+		this.userMessage = TextHelper.getDefaultWithTrim(userMessage);
 	}	
 	public String getTechnicalMessage() {
 		return technicalMessage;
 	}
 	
 	private void setTechnicalMessage(final String technicalMessage) {
-		this.technicalMessage = TextHelper.getDefaultWhithTrim(technicalMessage);
+		this.technicalMessage = TextHelper.getDefaultWithTrim(technicalMessage);
 	}	
 
 }

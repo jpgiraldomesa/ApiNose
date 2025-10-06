@@ -34,6 +34,6 @@ public final class CountryDomain extends Domain{
 
 	//Setter /Si el nombre es nulo, le asigna un valor por defecto y le quita los espacios en blanco al inicio y al final
 	public void setName(final String name) {
-		this.name = TextHelper.getDefaultWhithTrim(name);
+		this.name = TextHelper.getDefaultWithTrim(name);
 	}
 }

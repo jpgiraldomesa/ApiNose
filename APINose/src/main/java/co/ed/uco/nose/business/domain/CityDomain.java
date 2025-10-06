@@ -40,7 +40,7 @@ public final class CityDomain extends Domain {
 
     // Setter para el nombre, usando TextHelper para manejar nulos y espacios
     public void setName(final String name) {
-        this.name = TextHelper.getDefaultWhithTrim(name);
+        this.name = TextHelper.getDefaultWithTrim(name);
     }
 
     // Getter para el departamento

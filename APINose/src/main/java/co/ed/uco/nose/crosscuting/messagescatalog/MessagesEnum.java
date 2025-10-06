@@ -2,44 +2,55 @@ package co.ed.uco.nose.crosscuting.messagescatalog;
 
 import co.ed.uco.nose.crosscuting.helper.TextHelper;
 
+/**
+ * Enum que centraliza mensajes estandarizados para errores comunes en operaciones de conexión SQL.
+ * Cada entrada incluye un título (para logs/títulos de error) y contenido (descripción detallada).
+ */
 public enum MessagesEnum {
-	
-	USER_ERROR_SQL_CONNECTION_IS_EMPTY("CONEXION CONTRA LA FUENTE DE INFORMACIÓN DESEADA VACÍA","la conexion requerida para llevar a cabo la operacion contra la fuente de informacion deseada esta vacia. Por favor intente de nuevo y si el probelam persiste, contacte al administrador de la aplicación."),
-	TECHNICAL_ERROR_SQL_CONNECTION_IS_EMPTY("CONEXION CONTRA LA FUENTE DE INFORMACION DE SEADA NULA","La conexion requerida para llevar a cabo la operacion contra la base de datos llegó nula."),
-	USER_ERROR_SQL_CONNECTION_IS_CLOSED("CONEXION CONTRA LA FUENTE DE DATOS DESEADA CERRADA","La conexion requerida para llevar a cabo la operacion contra la fuente de datos deseada llego cerrada. Por favor intente de nuevo y si el probelam persiste, contacte al administrador de la aplicación."),
-	TECHNICAL_ERROR_SQL_CONNECTION_IS_CLOSED("CONEXION CONTRA LA FUENTE DE DATOS DESEADA CERRADA","La conexion requerida para llevar a cabo la operacion contra la fuente de datos deseada llego cerrada."),
-	USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS("PROBLEMA INESPERADO, VALIDANDO LA CONEXION CONTRA LA FUENTE DE DATOS DESEADA","Se ha presentado un problema inesperado tratando de validar el estado de la conexion requeridarada. Por favor intente de nuevo y si el probelam persiste, contacte al administrador de la aplicación."),
-	TECHNICAL_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS("ERROR INESPERADO, VALIDANDO SI LA CONEXION CONTRA LA BASE DE DATOS ESTABA ABIERTA","Se presento un error de tipo SQLException al validar si la conexion contra la base de datos estaba o no abierta. por favor valide la consola de errores para revisar con detalle el problema presentado"),
-	
-	;
-	
-	private String title;
-	private String content;
-	
-	private MessagesEnum(final String title,final String content) {
-		setTitle(title);
-		setContent(content);
-	}
+    
+    USER_ERROR_SQL_CONNECTION_IS_EMPTY(
+        "CONEXIÓN CONTRA LA FUENTE DE INFORMACIÓN DESEADA VACÍA",
+        "La conexión requerida para llevar a cabo la operación contra la fuente de información deseada está vacía. Por favor, intente de nuevo y si el problema persiste, contacte al administrador de la aplicación."
+    ),
+    
+    TECHNICAL_ERROR_SQL_CONNECTION_IS_EMPTY(
+        "CONEXIÓN CONTRA LA FUENTE DE INFORMACIÓN DESEADA NULA",
+        "La conexión requerida para llevar a cabo la operación contra la base de datos llegó nula."
+    ),
+    
+    USER_ERROR_SQL_CONNECTION_IS_CLOSED(
+        "CONEXIÓN CONTRA LA FUENTE DE DATOS DESEADA CERRADA",
+        "La conexión requerida para llevar a cabo la operación contra la fuente de datos deseada llegó cerrada. Por favor, intente de nuevo y si el problema persiste, contacte al administrador de la aplicación."
+    ),
+    
+    TECHNICAL_ERROR_SQL_CONNECTION_IS_CLOSED(
+        "CONEXIÓN CONTRA LA FUENTE DE DATOS DESEADA CERRADA",
+        "La conexión requerida para llevar a cabo la operación contra la fuente de datos deseada llegó cerrada."
+    ),
+    
+    USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS(
+        "PROBLEMA INESPERADO VALIDANDO LA CONEXIÓN CONTRA LA FUENTE DE DATOS DESEADA",
+        "Se ha presentado un problema inesperado tratando de validar el estado de la conexión requerida. Por favor, intente de nuevo y si el problema persiste, contacte al administrador de la aplicación."
+    ),
+    
+    TECHNICAL_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS(
+        "ERROR INESPERADO VALIDANDO SI LA CONEXIÓN CONTRA LA BASE DE DATOS ESTÁ ABIERTA",
+        "Se presentó un error de tipo SQLException al validar si la conexión contra la base de datos estaba o no abierta. Por favor, valide la consola de errores para revisar con detalle el problema presentado."
+    );
+    
+    private final String title;
+    private final String content;
+    
+    private MessagesEnum(final String title, final String content) {
+        this.title = TextHelper.getDefaultWithTrim(title);
+        this.content = TextHelper.getDefaultWithTrim(content);
+    }
 
+    public String getTitle() {
+        return title;
+    }
 
-	public String getTitle() {
-		return title;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setTitle(final String title) {
-		this.title = TextHelper.getDefaultWhithTrim(title);
-	}
-
-	public void setContent(final String content) {
-		this.content = TextHelper.getDefaultWhithTrim(content);
-	}
-	
-	
-	
-
-	
+    public String getContent() {
+        return content;
+    }
 }
