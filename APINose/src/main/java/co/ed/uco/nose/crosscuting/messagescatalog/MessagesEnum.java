@@ -38,19 +38,27 @@ public enum MessagesEnum {
         "Se presentó un error de tipo SQLException al validar si la conexión contra la base de datos estaba o no abierta. Por favor, valide la consola de errores para revisar con detalle el problema presentado."
     );
     
-    private final String title;
-    private final String content;
+    private String title;
+    private String content;
     
     private MessagesEnum(final String title, final String content) {
-        this.title = TextHelper.getDefaultWithTrim(title);
-        this.content = TextHelper.getDefaultWithTrim(content);
+        setTitle(title);
+        setContent(content);
     }
 
     public String getTitle() {
         return title;
     }
+    
+    private void setTitle(final String title) {
+		this.title = TextHelper.getDefaultWithTrim(title);
+	}
 
     public String getContent() {
         return content;
+    }
+    
+    private void setContent(final String content) {
+    	this.content = TextHelper.getDefaultWithTrim(content);
     }
 }
