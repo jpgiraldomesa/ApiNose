@@ -25,7 +25,11 @@ public abstract class SqlConnection {
 			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_IS_EMPTY.getContent();
 			throw NoseException.create(userMessage, technicalMessage);
 		}
-		
+		if  (connection.getAutoCommit()) {
+			var userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_TRANSACTION_NOT_STARTED.getContent();
+			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_TRANSACTION_NOT_STARTED.getContent();
+			throw NoseException.create(userMessage, technicalMessage);
+		}
 		try {
 			if (connection.isClosed()) {
 				var userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_CLOSED.getContent();
@@ -37,6 +41,7 @@ public abstract class SqlConnection {
 			var technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
 			throw NoseException.create(exception, userMessage, technicalMessage);
 		}
+		
 		
 		this.connection = connection;
 	}
