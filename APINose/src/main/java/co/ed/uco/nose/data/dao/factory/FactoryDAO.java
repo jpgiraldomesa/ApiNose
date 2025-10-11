@@ -1,67 +1,128 @@
 package co.ed.uco.nose.data.dao.factory;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
+import co.ed.uco.nose.crosscuting.exception.NoseException;
+import co.ed.uco.nose.crosscuting.helper.SqlConnectionHelper;
+import co.ed.uco.nose.crosscuting.messagescatalog.MessagesEnum;
 import co.ed.uco.nose.data.dao.entity.CityDAO;
 import co.ed.uco.nose.data.dao.entity.CountryDAO;
 import co.ed.uco.nose.data.dao.entity.DocumentTypeDAO;
 import co.ed.uco.nose.data.dao.entity.StateDAO;
 import co.ed.uco.nose.data.dao.entity.UserDAO;
+import co.ed.uco.nose.data.dao.factory.postgresql.PostgreSqlDAOFactory;
 
+
+/**
+ * Fábrica abstracta para DAOs, gestionando conexión y transacciones.
+ * Subclases implementan DAOs específicos (e.g., PostgreSQL).
+ */
 public abstract class FactoryDAO {
-	
-	protected Connection connection;
-	protected FactoryEnum factory = FactoryEnum.POSTGRESQL;
-	
-	
-	public static FactoryDAO getFactory(FactoryEnum factory) {
-		FactoryDAO factoryDAO = null;
-		return factoryDAO;
-	}
-	
-	public abstract CityDAO getCityDAO();
-	
-	public abstract CountryDAO getCountryDAO();
-	
-	public abstract DocumentTypeDAO getTypeDocumentDAO();
-	
-	public abstract StateDAO getStateDAO();
-	
-	public abstract UserDAO getUserDAO();
-	
-	protected abstract void openConnection();
-	
-	protected final void initializeTransaction() {
-		try {
-			connection.setAutoCommit(false);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		
-	}
-	
-	protected final void commitTransaction() {
-		try {
-			connection.commit();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		
-	}
-	
-	protected final void rollbackTransaction() {
-		try {
-			connection.rollback();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-	}
-	
-	protected final void closeConnection() {
-		try {
-			connection.close();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-	}
+    
+    protected Connection connection;
+    protected FactoryEnum factory = FactoryEnum.POSTGRESQL;
+    
+    /**
+     * Obtiene una instancia de fábrica basada en el enum especificado.
+     * @param factoryEnum El tipo de fábrica (e.g., POSTGRESQL).
+     * @return Instancia de FactoryDAO correspondiente.
+     */
+    public static FactoryDAO getFactory(FactoryEnum factoryEnum) {
+        switch (factoryEnum) {
+            case POSTGRESQL:
+                return new PostgreSqlDAOFactory();
+            default:
+                final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+                final String technicalMessage = "Fábrica DAO no soportada para el tipo especificado: " + factoryEnum;
+                throw NoseException.create(new IllegalArgumentException(),userMessage, technicalMessage);
+        }
+    }
+    
+    public abstract CityDAO getCityDAO();
+    
+    public abstract CountryDAO getCountryDAO();
+    
+    public abstract DocumentTypeDAO getDocumentTypeDAO();
+    
+    public abstract StateDAO getStateDAO();
+    
+    public abstract UserDAO getUserDAO();
+    
+    protected abstract void openConnection();
+    
+    /**
+     * Inicializa la transacción (setAutoCommit(false)).
+     * Valida conexión abierta antes de proceder.
+     * @throws NoseException si la conexión es inválida o hay error SQLException.
+     */
+    protected final void initializeTransaction() {
+        SqlConnectionHelper.validateConnection(connection);
+        
+        try {
+            if (!connection.getAutoCommit()) {
+                final String userMessage = MessagesEnum.USER_ERROR_TRANSACTION_ALREADY_INITIATED.getContent();
+                final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_TRANSACTION_ALREADY_INITIATED.getContent();
+                throw NoseException.create(new SQLException(), userMessage, technicalMessage);
+            }
+            connection.setAutoCommit(false);
+        } catch (SQLException exception) {
+            final String userMessage = MessagesEnum.USER_ERROR_TRANSACTION_INIT_FAILED.getContent();
+            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_TRANSACTION_INIT_FAILED.getContent();
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        }
+    }
+    
+    /**
+     * Confirma la transacción (commit).
+     * Valida conexión abierta y transacción iniciada antes de proceder.
+     * @throws NoseException si la conexión es inválida o hay error SQLException.
+     */
+    protected final void commitTransaction() {
+        SqlConnectionHelper.validateConnection(connection);
+        SqlConnectionHelper.validateIfTransactionWasInitiated(connection);
+        
+        try {
+            connection.commit();
+        } catch (SQLException exception) {
+            final String userMessage = MessagesEnum.USER_ERROR_TRANSACTION_COMMIT_FAILED.getContent();
+            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_TRANSACTION_COMMIT_FAILED.getContent();
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        }
+    }
+    
+    /**
+     * Cancela la transacción (rollback).
+     * Valida conexión abierta y transacción iniciada antes de proceder.
+     * @throws NoseException si la conexión es inválida o hay error SQLException.
+     */
+    protected final void rollbackTransaction() {
+        SqlConnectionHelper.validateConnection(connection);
+        SqlConnectionHelper.validateIfTransactionWasInitiated(connection);
+        
+        try {
+            connection.rollback();
+        } catch (SQLException exception) {
+            final String userMessage = MessagesEnum.USER_ERROR_TRANSACTION_ROLLBACK_FAILED.getContent();
+            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_TRANSACTION_ROLLBACK_FAILED.getContent();
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        }
+    }
+    
+    /**
+     * Cierra la conexión.
+     * Valida conexión abierta antes de proceder.
+     * @throws NoseException si hay error SQLException.
+     */
+    protected final void closeConnection() {
+        SqlConnectionHelper.validateConnection(connection);
+        
+        try {
+            connection.close();
+        } catch (SQLException exception) {
+            final String userMessage = MessagesEnum.USER_ERROR_CONNECTION_CLOSE_FAILED.getContent();
+            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_CONNECTION_CLOSE_FAILED.getContent();
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        }
+    }
 }

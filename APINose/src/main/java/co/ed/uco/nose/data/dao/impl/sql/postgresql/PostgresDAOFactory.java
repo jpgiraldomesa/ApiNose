@@ -3,7 +3,7 @@ package co.ed.uco.nose.data.dao.impl.sql.postgresql;
 import java.sql.Connection;
 
 import co.ed.uco.nose.crosscuting.exception.NoseException;
-import co.ed.uco.nose.data.dao.entity.SqlConnection;
+import co.ed.uco.nose.crosscuting.helper.SqlConnectionHelper;
 
 public class PostgresDAOFactory {
     private Connection connection;
@@ -15,7 +15,7 @@ public class PostgresDAOFactory {
         String password = "1023";
 
         try {
-            this.connection = SqlConnection.openConnection(url, user, password);
+            this.connection = SqlConnectionHelper.openConnection(url, user, password);
             System.out.println("Conexión a PostgreSQL local (base de datos 'Doo', esquema 'public') abierta exitosamente.");
         } catch (NoseException e) {
             // Manejo controlado: registre el technicalMessage para depuración
@@ -27,7 +27,7 @@ public class PostgresDAOFactory {
     // Resto de métodos (initTransaction, closeConnection, etc.) como se definió previamente
     protected void closeConnection() {
         if (connection != null) {
-            SqlConnection.closeConnection(connection);
+            SqlConnectionHelper.closeConnection(connection);
         }
     }
 }

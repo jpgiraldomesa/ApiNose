@@ -4,11 +4,11 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
 
+import co.ed.uco.nose.crosscuting.helper.SqlConnectionHelper;
 import co.ed.uco.nose.data.dao.entity.CityDAO;
-import co.ed.uco.nose.data.dao.entity.SqlConnection;
 import co.ed.uco.nose.entity.CityEntity;
 
-public final class CityPostgreSqlDAO extends SqlConnection implements CityDAO {
+public final class CityPostgreSqlDAO extends SqlConnectionHelper implements CityDAO {
 
 	public CityPostgreSqlDAO(final Connection connection) {
 		super(connection);

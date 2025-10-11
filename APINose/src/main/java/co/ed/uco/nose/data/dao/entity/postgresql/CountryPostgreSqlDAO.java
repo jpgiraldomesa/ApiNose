@@ -4,13 +4,13 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
 
+import co.ed.uco.nose.crosscuting.helper.SqlConnectionHelper;
 import co.ed.uco.nose.data.dao.entity.CountryDAO;
-import co.ed.uco.nose.data.dao.entity.SqlConnection;
 import co.ed.uco.nose.entity.CountryEntity;
 
-public final class CountryPostgreSqlDAO extends SqlConnection implements CountryDAO {
+public final class CountryPostgreSqlDAO extends SqlConnectionHelper implements CountryDAO {
 
-	protected CountryPostgreSqlDAO(Connection connection) {
+	public CountryPostgreSqlDAO(Connection connection) {
 		super(connection);
 		// TODO Auto-generated constructor stub
 	}

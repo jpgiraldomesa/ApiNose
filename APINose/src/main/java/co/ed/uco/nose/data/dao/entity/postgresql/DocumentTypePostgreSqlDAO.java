@@ -4,13 +4,13 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.UUID;
 
+import co.ed.uco.nose.crosscuting.helper.SqlConnectionHelper;
 import co.ed.uco.nose.data.dao.entity.DocumentTypeDAO;
-import co.ed.uco.nose.data.dao.entity.SqlConnection;
 import co.ed.uco.nose.entity.DocumentTypeEntity;
 
-public final class DocumentTypePostgreSqlDAO extends SqlConnection implements DocumentTypeDAO {
+public final class DocumentTypePostgreSqlDAO extends SqlConnectionHelper implements DocumentTypeDAO {
 
-	protected DocumentTypePostgreSqlDAO(Connection connection) {
+	public DocumentTypePostgreSqlDAO(Connection connection) {
 		super(connection);
 		// TODO Auto-generated constructor stub
 	}
