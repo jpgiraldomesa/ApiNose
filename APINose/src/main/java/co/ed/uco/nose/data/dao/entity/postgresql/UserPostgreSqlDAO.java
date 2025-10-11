@@ -12,6 +12,8 @@ import co.ed.uco.nose.crosscuting.exception.NoseException;
 import co.ed.uco.nose.crosscuting.helper.SqlConnectionHelper;
 import co.ed.uco.nose.crosscuting.messagescatalog.MessagesEnum;
 import co.ed.uco.nose.data.dao.entity.UserDAO;
+import co.ed.uco.nose.entity.CityEntity;
+import co.ed.uco.nose.entity.DocumentTypeEntity;
 import co.ed.uco.nose.entity.UserEntity;
 
 public final class UserPostgreSqlDAO extends SqlConnectionHelper implements UserDAO {
@@ -180,15 +182,40 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
         }
     }
     
-    // Método auxiliar para mapear ResultSet a UserEntity
+ // Método auxiliar para mapear ResultSet a UserEntity
     private UserEntity mapResultSetToUserEntity(ResultSet resultSet) throws SQLException {
         final UserEntity entity = new UserEntity();
+        
+        // Mapeo de ID principal
         entity.setId(UUID.fromString(resultSet.getString("id")));
-        // Asuma getters en UserEntity para setear otros campos; ej:
-        // entity.setDocumentType(new DocumentTypeEntity()); // Mapear FKs
-        // entity.setDocumentNumber(resultSet.getString("numero_identificacion"));
-        // entity.setFirstName(resultSet.getString("primer_nombre"));
-        // ... (completar según MER)
+        
+        // Mapeo de FK para tipo de documento (instancia stub con ID)
+        if (resultSet.getString("tipo_identificacion_id") != null) {
+            final DocumentTypeEntity documentType = new DocumentTypeEntity();
+            documentType.setId(UUID.fromString(resultSet.getString("tipo_identificacion_id")));
+            entity.setDocumentType(documentType);
+        }
+        
+        // Mapeo de campos de texto
+        entity.setDocumentNumber(resultSet.getString("numero_identificacion"));
+        entity.setFirstName(resultSet.getString("primer_nombre"));
+        entity.setSecondName(resultSet.getString("segundo_nombre"));
+        entity.setFirstSurname(resultSet.getString("primer_apellido"));
+        entity.setSecondSurname(resultSet.getString("segundo_apellido"));
+        entity.setEmail(resultSet.getString("correo_electronico"));
+        entity.setMobilePhoneNumber(resultSet.getString("numero_telefono_movil"));
+        
+        // Mapeo de FK para ciudad de residencia (instancia stub con ID)
+        if (resultSet.getString("ciudad_residencia_id") != null) {
+            final CityEntity residenceCity = new CityEntity();
+            residenceCity.setId(UUID.fromString(resultSet.getString("ciudad_residencia_id")));
+            entity.setResidenceCity(residenceCity);
+        }
+        
+        // Mapeo de campos booleanos
+        entity.setEmailConfirmed(resultSet.getBoolean("correo_electronico_confirmado"));
+        entity.setMobilePhoneNumberConfirmed(resultSet.getBoolean("numero_telefono_movil_confirmado"));
+        
         return entity;
     }
 }
