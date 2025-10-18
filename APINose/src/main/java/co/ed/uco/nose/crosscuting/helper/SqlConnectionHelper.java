@@ -62,7 +62,7 @@ public abstract class SqlConnectionHelper {
             if (connection.getAutoCommit()) {
                 final String userMessage = MessagesEnum.USER_ERROR_TRANSACTION_NOT_INITIATED.getContent();
                 final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_TRANSACTION_NOT_INITIATED.getContent();
-                throw NoseException.create(new Exception(),userMessage, technicalMessage);
+                throw NoseException.create(new Exception(), userMessage, technicalMessage);
             }
         } catch (SQLException exception) {
             final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
@@ -173,7 +173,3 @@ public abstract class SqlConnectionHelper {
         }
     }
 }
-
-
-
-

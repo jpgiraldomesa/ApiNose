@@ -34,23 +34,21 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
         sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql.toString())) {
-            preparedStatement.setObject(1, entity.getId());  // UUID con setObject
-            preparedStatement.setObject(2, entity.getDocumentType().getId());  // FK UUID con setObject
-            preparedStatement.setString(3, entity.getDocumentNumber());
-            preparedStatement.setString(4, entity.getFirstName());
-            preparedStatement.setString(5, entity.getSecondName());
-            preparedStatement.setString(6, entity.getFirstSurname());
-            preparedStatement.setString(7, entity.getSecondSurname());
-            preparedStatement.setObject(8, entity.getResidenceCity().getId());  // FK UUID con setObject
-            preparedStatement.setString(9, entity.getEmail());
-            preparedStatement.setString(10, entity.getMobilePhoneNumber());
-            preparedStatement.setBoolean(11, entity.isEmailConfirmed());
-            preparedStatement.setBoolean(12, entity.isMobilePhoneNumberConfirmed());
-            
-            preparedStatement.executeUpdate();
+            try {
+                setCreateOrUpdateParameters(preparedStatement, entity);
+                preparedStatement.executeUpdate();
+            } catch (final SQLException exception) {
+                var userMessage = MessagesEnum.USER_ERROR_USER_CREATE.getContent();
+                var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_CREATE.getContent() + ": Error preparando o ejecutando INSERT";
+                throw NoseException.create(exception, userMessage, technicalMessage);
+            }
         } catch (final SQLException exception) {
-            final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
-            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+            var userMessage = MessagesEnum.USER_ERROR_USER_CREATE.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_CREATE.getContent() + ": Error en conexión SQL";
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        } catch (final Exception exception) {
+            var userMessage = MessagesEnum.USER_ERROR_USER_CREATE_UNEXPECTED.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_CREATE_UNEXPECTED.getContent();
             throw NoseException.create(exception, userMessage, technicalMessage);
         }
     }
@@ -62,15 +60,23 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
         final List<UserEntity> users = new ArrayList<>();
         final String sql = "SELECT * FROM usuario";
 
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            
-            while (resultSet.next()) {
-                users.add(mapResultSetToUserEntity(resultSet));
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql)) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    users.add(mapResultSetToUserEntity(resultSet));
+                }
+            } catch (final SQLException exception) {
+                var userMessage = MessagesEnum.USER_ERROR_USER_FIND_ALL.getContent();
+                var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_ALL.getContent() + ": Error ejecutando consulta";
+                throw NoseException.create(exception, userMessage, technicalMessage);
             }
         } catch (final SQLException exception) {
-            final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
-            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+            var userMessage = MessagesEnum.USER_ERROR_USER_FIND_ALL.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_ALL.getContent() + ": Error preparando consulta";
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        } catch (final Exception exception) {
+            var userMessage = MessagesEnum.USER_ERROR_USER_FIND_ALL_UNEXPECTED.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_ALL_UNEXPECTED.getContent();
             throw NoseException.create(exception, userMessage, technicalMessage);
         }
 
@@ -83,26 +89,59 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
 
         final List<UserEntity> users = new ArrayList<>();
         final StringBuilder sql = new StringBuilder("SELECT * FROM usuario WHERE 1=1");
-        
+        final List<Object> params = new ArrayList<>();
+
         if (filterEntity.getDocumentNumber() != null && !filterEntity.getDocumentNumber().isEmpty()) {
             sql.append(" AND numero_identificacion = ?");
+            params.add(filterEntity.getDocumentNumber());
         }
-        // Agregue más filtros según necesidades (e.g., por email)
+        if (filterEntity.getDocumentType() != null && filterEntity.getDocumentType().getId() != null) {
+            sql.append(" AND tipo_identificacion_id = ?");
+            params.add(filterEntity.getDocumentType().getId());
+        }
+        if (filterEntity.getResidenceCity() != null && filterEntity.getResidenceCity().getId() != null) {
+            sql.append(" AND ciudad_residencia_id = ?");
+            params.add(filterEntity.getResidenceCity().getId());
+        }
+        if (filterEntity.getEmail() != null && !filterEntity.getEmail().isEmpty()) {
+            sql.append(" AND correo_electronico = ?");
+            params.add(filterEntity.getEmail());
+        }
+        if (filterEntity.isEmailConfirmed()) {
+            sql.append(" AND correo_electronico_confirmado = ?");
+            params.add(true);
+        }
+        if (filterEntity.isMobilePhoneNumberConfirmed()) {
+            sql.append(" AND numero_telefono_movil_confirmado = ?");
+            params.add(true);
+        }
 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql.toString())) {
-            int paramIndex = 1;
-            if (filterEntity.getDocumentNumber() != null && !filterEntity.getDocumentNumber().isEmpty()) {
-                preparedStatement.setString(paramIndex++, filterEntity.getDocumentNumber());
-            }
-            
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    users.add(mapResultSetToUserEntity(resultSet));
+            try {
+                for (int i = 0; i < params.size(); i++) {
+                    preparedStatement.setObject(i + 1, params.get(i));
                 }
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        users.add(mapResultSetToUserEntity(resultSet));
+                    }
+                } catch (final SQLException exception) {
+                    var userMessage = MessagesEnum.USER_ERROR_USER_FIND_BY_FILTER.getContent();
+                    var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_BY_FILTER.getContent() + ": Error ejecutando consulta";
+                    throw NoseException.create(exception, userMessage, technicalMessage);
+                }
+            } catch (final SQLException exception) {
+                var userMessage = MessagesEnum.USER_ERROR_USER_FIND_BY_FILTER.getContent();
+                var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_BY_FILTER.getContent() + ": Error preparando consulta";
+                throw NoseException.create(exception, userMessage, technicalMessage);
             }
         } catch (final SQLException exception) {
-            final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
-            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+            var userMessage = MessagesEnum.USER_ERROR_USER_FIND_BY_FILTER.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_BY_FILTER.getContent() + ": Error en conexión SQL";
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        } catch (final Exception exception) {
+            var userMessage = MessagesEnum.USER_ERROR_USER_FIND_BY_FILTER_UNEXPECTED.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_BY_FILTER_UNEXPECTED.getContent();
             throw NoseException.create(exception, userMessage, technicalMessage);
         }
 
@@ -116,17 +155,30 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
         final String sql = "SELECT * FROM usuario WHERE id = ?";
 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql)) {
-            preparedStatement.setObject(1, id);  // UUID con setObject
-            
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return mapResultSetToUserEntity(resultSet);
+            try {
+                preparedStatement.setObject(1, id);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return mapResultSetToUserEntity(resultSet);
+                    }
+                    return null;
+                } catch (final SQLException exception) {
+                    var userMessage = MessagesEnum.USER_ERROR_USER_FIND_BY_ID.getContent();
+                    var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_BY_ID.getContent() + ": Error ejecutando consulta";
+                    throw NoseException.create(exception, userMessage, technicalMessage);
                 }
-                return null;  // O lance excepción si no encontrado
+            } catch (final SQLException exception) {
+                var userMessage = MessagesEnum.USER_ERROR_USER_FIND_BY_ID.getContent();
+                var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_BY_ID.getContent() + ": Error preparando consulta";
+                throw NoseException.create(exception, userMessage, technicalMessage);
             }
         } catch (final SQLException exception) {
-            final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
-            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+            var userMessage = MessagesEnum.USER_ERROR_USER_FIND_BY_ID.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_BY_ID.getContent() + ": Error en conexión SQL";
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        } catch (final Exception exception) {
+            var userMessage = MessagesEnum.USER_ERROR_USER_FIND_BY_ID_UNEXPECTED.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_FIND_BY_ID_UNEXPECTED.getContent();
             throw NoseException.create(exception, userMessage, technicalMessage);
         }
     }
@@ -136,30 +188,29 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
         SqlConnectionHelper.validateConnection(getConnection());
         SqlConnectionHelper.validateIfTransactionWasInitiated(getConnection());
 
-        final StringBuilder sql = new StringBuilder("UPDATE usuario SET ");
-        sql.append("tipo_identificacion_id = ?, numero_identificacion = ?, primer_nombre = ?, ");
+        final StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE usuario SET tipo_identificacion_id = ?, numero_identificacion = ?, primer_nombre = ?, ");
         sql.append("segundo_nombre = ?, primer_apellido = ?, segundo_apellido = ?, ciudad_residencia_id = ?, ");
         sql.append("correo_electronico = ?, numero_telefono_movil = ?, correo_electronico_confirmado = ?, ");
         sql.append("numero_telefono_movil_confirmado = ? WHERE id = ?");
 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql.toString())) {
-            preparedStatement.setObject(1, entity.getDocumentType().getId());  // FK UUID con setObject
-            preparedStatement.setString(2, entity.getDocumentNumber());
-            preparedStatement.setString(3, entity.getFirstName());
-            preparedStatement.setString(4, entity.getSecondName());
-            preparedStatement.setString(5, entity.getFirstSurname());
-            preparedStatement.setString(6, entity.getSecondSurname());
-            preparedStatement.setObject(7, entity.getResidenceCity().getId());  // FK UUID con setObject
-            preparedStatement.setString(8, entity.getEmail());
-            preparedStatement.setString(9, entity.getMobilePhoneNumber());
-            preparedStatement.setBoolean(10, entity.isEmailConfirmed());
-            preparedStatement.setBoolean(11, entity.isMobilePhoneNumberConfirmed());
-            preparedStatement.setObject(12, entity.getId());  // UUID con setObject en WHERE
-            
-            preparedStatement.executeUpdate();
+            try {
+                setCreateOrUpdateParameters(preparedStatement, entity);
+                preparedStatement.setObject(12, entity.getId());
+                preparedStatement.executeUpdate();
+            } catch (final SQLException exception) {
+                var userMessage = MessagesEnum.USER_ERROR_USER_UPDATE.getContent();
+                var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_UPDATE.getContent() + ": Error preparando o ejecutando UPDATE";
+                throw NoseException.create(exception, userMessage, technicalMessage);
+            }
         } catch (final SQLException exception) {
-            final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
-            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+            var userMessage = MessagesEnum.USER_ERROR_USER_UPDATE.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_UPDATE.getContent() + ": Error en conexión SQL";
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        } catch (final Exception exception) {
+            var userMessage = MessagesEnum.USER_ERROR_USER_UPDATE_UNEXPECTED.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_UPDATE_UNEXPECTED.getContent();
             throw NoseException.create(exception, userMessage, technicalMessage);
         }
     }
@@ -172,31 +223,62 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
         final String sql = "DELETE FROM usuario WHERE id = ?";
 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql)) {
-            preparedStatement.setObject(1, id);  // UUID con setObject
-            
-            preparedStatement.executeUpdate();
+            try {
+                preparedStatement.setObject(1, id);
+                preparedStatement.executeUpdate();
+            } catch (final SQLException exception) {
+                var userMessage = MessagesEnum.USER_ERROR_USER_DELETE.getContent();
+                var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_DELETE.getContent() + ": Error preparando o ejecutando DELETE";
+                throw NoseException.create(exception, userMessage, technicalMessage);
+            }
         } catch (final SQLException exception) {
-            final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
-            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
+            var userMessage = MessagesEnum.USER_ERROR_USER_DELETE.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_DELETE.getContent() + ": Error en conexión SQL";
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        } catch (final Exception exception) {
+            var userMessage = MessagesEnum.USER_ERROR_USER_DELETE_UNEXPECTED.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_DELETE_UNEXPECTED.getContent();
             throw NoseException.create(exception, userMessage, technicalMessage);
         }
     }
-    
- // Método auxiliar para mapear ResultSet a UserEntity
+
+    private void setCreateOrUpdateParameters(PreparedStatement ps, UserEntity entity) throws SQLException {
+        ps.setObject(1, entity.getDocumentType().getId());
+        ps.setString(2, entity.getDocumentNumber());
+        ps.setString(3, entity.getFirstName());
+        ps.setString(4, entity.getSecondName());
+        ps.setString(5, entity.getFirstSurname());
+        ps.setString(6, entity.getSecondSurname());
+        ps.setObject(7, entity.getResidenceCity().getId());
+        ps.setString(8, entity.getEmail());
+        ps.setString(9, entity.getMobilePhoneNumber());
+        ps.setBoolean(10, entity.isEmailConfirmed());
+        ps.setBoolean(11, entity.isMobilePhoneNumberConfirmed());
+    }
+
     private UserEntity mapResultSetToUserEntity(ResultSet resultSet) throws SQLException {
         final UserEntity entity = new UserEntity();
-        
-        // Mapeo de ID principal
-        entity.setId(UUID.fromString(resultSet.getString("id")));
-        
-        // Mapeo de FK para tipo de documento (instancia stub con ID)
+
+        try {
+            entity.setId(UUID.fromString(resultSet.getString("id")));
+        } catch (IllegalArgumentException exception) {
+            var userMessage = MessagesEnum.USER_ERROR_USER_INVALID_UUID.getContent();
+            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_INVALID_UUID.getContent() + ": ID inválido en usuario";
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        }
+
         if (resultSet.getString("tipo_identificacion_id") != null) {
             final DocumentTypeEntity documentType = new DocumentTypeEntity();
-            documentType.setId(UUID.fromString(resultSet.getString("tipo_identificacion_id")));
+            try {
+                documentType.setId(UUID.fromString(resultSet.getString("tipo_identificacion_id")));
+            } catch (IllegalArgumentException exception) {
+                var userMessage = MessagesEnum.USER_ERROR_USER_INVALID_UUID.getContent();
+                var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_INVALID_UUID.getContent() + ": tipo_identificacion_id inválido";
+                throw NoseException.create(exception, userMessage, technicalMessage);
+            }
             entity.setDocumentType(documentType);
         }
-        
-        // Mapeo de campos de texto
+
         entity.setDocumentNumber(resultSet.getString("numero_identificacion"));
         entity.setFirstName(resultSet.getString("primer_nombre"));
         entity.setSecondName(resultSet.getString("segundo_nombre"));
@@ -204,18 +286,22 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
         entity.setSecondSurname(resultSet.getString("segundo_apellido"));
         entity.setEmail(resultSet.getString("correo_electronico"));
         entity.setMobilePhoneNumber(resultSet.getString("numero_telefono_movil"));
-        
-        // Mapeo de FK para ciudad de residencia (instancia stub con ID)
+
         if (resultSet.getString("ciudad_residencia_id") != null) {
             final CityEntity residenceCity = new CityEntity();
-            residenceCity.setId(UUID.fromString(resultSet.getString("ciudad_residencia_id")));
+            try {
+                residenceCity.setId(UUID.fromString(resultSet.getString("ciudad_residencia_id")));
+            } catch (IllegalArgumentException exception) {
+                var userMessage = MessagesEnum.USER_ERROR_USER_INVALID_UUID.getContent();
+                var technicalMessage = MessagesEnum.TECHNICAL_ERROR_USER_INVALID_UUID.getContent() + ": ciudad_residencia_id inválido";
+                throw NoseException.create(exception, userMessage, technicalMessage);
+            }
             entity.setResidenceCity(residenceCity);
         }
-        
-        // Mapeo de campos booleanos
+
         entity.setEmailConfirmed(resultSet.getBoolean("correo_electronico_confirmado"));
         entity.setMobilePhoneNumberConfirmed(resultSet.getBoolean("numero_telefono_movil_confirmado"));
-        
+
         return entity;
     }
 }

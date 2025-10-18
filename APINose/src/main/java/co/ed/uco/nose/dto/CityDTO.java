@@ -5,7 +5,7 @@ import java.util.UUID;
 public class CityDTO {
 
     private UUID id;
-    private StateDTO department;
+    private StateDTO state;
     private String name;
 
     // Default constructor
@@ -14,9 +14,9 @@ public class CityDTO {
     }
 
     // Complete constructor
-    public CityDTO(final UUID id, final StateDTO department, final String name) {
+    public CityDTO(final UUID id, final StateDTO state, final String name) {
         this.id = id;
-        this.department = department;
+        this.state = state;
         this.name = name;
     }
 
@@ -25,8 +25,8 @@ public class CityDTO {
         return id;
     }
 
-    public StateDTO getDepartment() {
-        return department;
+    public StateDTO getState() {
+        return state;
     }
 
     public String getName() {
@@ -38,8 +38,8 @@ public class CityDTO {
         this.id = id;
     }
 
-    public void setDepartment(final StateDTO department) {
-        this.department = department;
+    public void setDepartment(final StateDTO state) {
+        this.state = state;
     }
 
     public void setName(final String name) {

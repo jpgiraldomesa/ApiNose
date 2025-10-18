@@ -1,7 +1,6 @@
 package co.ed.uco.nose.data.dao.factory.postgresql;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import co.ed.uco.nose.crosscuting.exception.NoseException;
 import co.ed.uco.nose.crosscuting.helper.SqlConnectionHelper;
@@ -35,41 +34,31 @@ public final class PostgreSqlDAOFactory extends FactoryDAO {
 
     @Override
     public CityDAO getCityDAO() {
-        if (connection == null) {
-            throw new IllegalStateException("Conexión no inicializada. Llame a openConnection() primero.");
-        }
+       	SqlConnectionHelper.validateConnection(connection);
         return new CityPostgreSqlDAO(connection);
     }
 
     @Override
     public CountryDAO getCountryDAO() {
-        if (connection == null) {
-            throw new IllegalStateException("Conexión no inicializada. Llame a openConnection() primero.");
-        }
+    	SqlConnectionHelper.validateConnection(connection);
         return new CountryPostgreSqlDAO(connection);
     }
 
     @Override
     public DocumentTypeDAO getDocumentTypeDAO() {
-        if (connection == null) {
-            throw new IllegalStateException("Conexión no inicializada. Llame a openConnection() primero.");
-        }
+        SqlConnectionHelper.validateConnection(connection);
         return new DocumentTypePostgreSqlDAO(connection);
     }
 
     @Override
     public StateDAO getStateDAO() {
-        if (connection == null) {
-            throw new IllegalStateException("Conexión no inicializada. Llame a openConnection() primero.");
-        }
+    	SqlConnectionHelper.validateConnection(connection);
         return new StatePostgreSqlDAO(connection);
     }
 
     @Override
     public UserDAO getUserDAO() {
-        if (connection == null) {
-            throw new IllegalStateException("Conexión no inicializada. Llame a openConnection() primero.");
-        }
+    	SqlConnectionHelper.validateConnection(connection);
         return new UserPostgreSqlDAO(connection);
     }
 
@@ -84,13 +73,13 @@ public final class PostgreSqlDAOFactory extends FactoryDAO {
             // Validación opcional post-apertura para asegurar estado inicial
             SqlConnectionHelper.validateConnection(connection);
             System.out.println("Conexión a PostgreSQL ('Doo') abierta exitosamente.");  // Log para depuración
-        } catch (NoseException e) {
+        } catch (NoseException exception) {
             // Re-lanza la excepción personalizada
-            throw e;
-        } catch (Exception e) {
-            final String userMessage = MessagesEnum.USER_ERROR_CONNECTION_OPEN_FAILED.getContent();
-            final String technicalMessage = "Error inesperado al abrir conexión: " + e.getMessage();
-            throw NoseException.create(e, userMessage, technicalMessage);
+            throw exception;
+        } catch (Exception exception) {
+            var userMessage = MessagesEnum.USER_ERROR_CONNECTION_OPEN_FAILED.getContent();
+            final String technicalMessage = "Error inesperado al abrir conexión: " + exception.getMessage();
+            throw NoseException.create(exception, userMessage, technicalMessage);
         }
     }
 }

@@ -32,4 +32,8 @@ public final class UUIDHelper {
 	public static UUID getFromString(final String uuidAsString) {
 		return (TextHelper.isEmpty(uuidAsString) ? getDefault() : UUID.fromString(uuidAsString));
 	}
+	
+	public static UUID generateUUID() {
+		return UUID.randomUUID();
+	}
 }

@@ -1,38 +1,25 @@
 package co.ed.uco.nose.entity;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
 import java.util.UUID;
+import java.util.Objects;
 
-@Entity
-@Table(name = "country")
 public class CountryEntity {
-
-    @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(name = "id", nullable = false)
     private UUID id;
+    private String name; // NVARCHAR(50) NOT NULL
 
-    @Column(name = "name", nullable = false, length = 50)
-    private String name;
+    // Constructor vacío para mapeo
+    public CountryEntity() {}
 
-    // Constructor por defecto
-    public CountryEntity() {
-    }
-
-    // Constructor completo
-    public CountryEntity(final UUID id, final String name) {
+    public CountryEntity(UUID id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    // Getters y Setters
     public UUID getId() {
         return id;
     }
 
-    public void setId(final UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -40,7 +27,20 @@ public class CountryEntity {
         return name;
     }
 
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CountryEntity that = (CountryEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

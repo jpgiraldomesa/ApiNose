@@ -10,27 +10,27 @@ public final class CityDomain extends Domain {
 
     // Atributos
     private String name;
-    private StateDomain department; // Referencia al DepartmentDomain asociado
+    private StateDomain state; // Referencia al stateDomain asociado
 
     // Constructor que asigna un ID y valores por defecto
     public CityDomain() {
         super(UUIDHelper.getUUIDHelper().getDefault());
         setName(TextHelper.getDefault());
-        setDepartment(new StateDomain()); // Departamento por defecto
+        setState(new StateDomain()); // Departamento por defecto
     }
 
     // Constructor que asigna un ID por defecto y un nombre
     public CityDomain(final UUID id) {
         super(id);
         setName(TextHelper.getDefault());
-        setDepartment(new StateDomain()); // Departamento por defecto
+        setState(new StateDomain()); // Departamento por defecto
     }
 
     // Constructor que asigna un ID, un nombre y un departamento
-    public CityDomain(final UUID id, final String name, final StateDomain department) {
+    public CityDomain(final UUID id, final String name, final StateDomain state) {
         super(id);
         setName(name);
-        setDepartment(department);
+        setState(state);
     }
 
     // Getter para el nombre
@@ -44,12 +44,12 @@ public final class CityDomain extends Domain {
     }
 
     // Getter para el departamento
-    public StateDomain getDepartment() {
-        return department;
+    public StateDomain getState() {
+        return state;
     }
 
     // Setter para el departamento, asegurando que no sea nulo
-    public void setDepartment(final StateDomain department) {
-        this.department = ObjectHelper.getDefaultIfNull(department, new StateDomain());
+    public void setState(final StateDomain state) {
+        this.state = ObjectHelper.getDefaultIfNull(state, new StateDomain());
     }
 }

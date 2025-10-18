@@ -1,43 +1,27 @@
 package co.ed.uco.nose.entity;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
 import java.util.UUID;
+import java.util.Objects;
 
-@Entity
-@Table(name = "city")
 public class CityEntity {
-
-    @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(name = "id", nullable = false)
     private UUID id;
+    private StateEntity state; // FK NOT NULL
+    private String name; // NVARCHAR(50) NOT NULL
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "state_id", nullable = false)
-    private StateEntity state;
+    // Constructor vacío
+    public CityEntity() {}
 
-    @Column(name = "name", nullable = false, length = 50)
-    private String name;
-
-    // Default constructor
-    public CityEntity() {
-    }
-
-    // Complete constructor
-    public CityEntity(final UUID id, final StateEntity state, final String name) {
+    public CityEntity(UUID id, StateEntity state, String name) {
         this.id = id;
         this.state = state;
         this.name = name;
     }
 
-    // Getters and Setters
     public UUID getId() {
         return id;
     }
 
-    public void setId(final UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -45,7 +29,7 @@ public class CityEntity {
         return state;
     }
 
-    public void setState(final StateEntity state) {
+    public void setState(StateEntity state) {
         this.state = state;
     }
 
@@ -53,7 +37,20 @@ public class CityEntity {
         return name;
     }
 
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CityEntity that = (CityEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

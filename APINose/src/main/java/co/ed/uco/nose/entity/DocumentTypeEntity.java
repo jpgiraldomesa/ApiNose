@@ -1,38 +1,25 @@
 package co.ed.uco.nose.entity;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
 import java.util.UUID;
+import java.util.Objects;
 
-@Entity
-@Table(name = "document_type")
 public class DocumentTypeEntity {
-
-    @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(name = "id", nullable = false)
     private UUID id;
+    private String name; // NVARCHAR(50) NOT NULL
 
-    @Column(name = "name", nullable = false, length = 50)
-    private String name;
+    // Constructor vacío
+    public DocumentTypeEntity() {}
 
-    // Default constructor
-    public DocumentTypeEntity() {
-    }
-
-    // Complete constructor
-    public DocumentTypeEntity(final UUID id, final String name) {
+    public DocumentTypeEntity(UUID id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    // Getters and Setters
     public UUID getId() {
         return id;
     }
 
-    public void setId(final UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -40,7 +27,20 @@ public class DocumentTypeEntity {
         return name;
     }
 
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DocumentTypeEntity that = (DocumentTypeEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

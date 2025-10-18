@@ -1,64 +1,28 @@
 package co.ed.uco.nose.entity;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
 import java.util.UUID;
+import java.util.Objects;
 
-@Entity
-@Table(name = "user")
 public class UserEntity {
-
-    @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(name = "id", nullable = false)
     private UUID id;
+    private DocumentTypeEntity documentType; // FK NOT NULL
+    private String documentNumber; // NVARCHAR(25) NOT NULL
+    private String firstName; // NVARCHAR(20) NOT NULL
+    private String secondName; // NVARCHAR(20) NOT NULL
+    private String firstSurname; // NVARCHAR(20) NOT NULL
+    private String secondSurname; // NVARCHAR(20) NOT NULL
+    private CityEntity residenceCity; // FK NOT NULL
+    private String email; // NVARCHAR(250) NOT NULL
+    private String mobilePhoneNumber; // NVARCHAR(20) NOT NULL
+    private boolean emailConfirmed; // BIT NOT NULL
+    private boolean mobilePhoneNumberConfirmed; // BIT NOT NULL
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "document_type_id", nullable = false)
-    private DocumentTypeEntity documentType;
+    // Constructor vacío
+    public UserEntity() {}
 
-    @Column(name = "document_number", nullable = false, length = 25)
-    private String documentNumber;
-
-    @Column(name = "first_name", nullable = false, length = 20)
-    private String firstName;
-
-    @Column(name = "second_name", length = 20)
-    private String secondName;
-
-    @Column(name = "first_surname", nullable = false, length = 20)
-    private String firstSurname;
-
-    @Column(name = "second_surname", nullable = false, length = 20)
-    private String secondSurname;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "residence_city_id", nullable = false)
-    private CityEntity residenceCity;
-
-    @Column(name = "email", nullable = false, length = 250)
-    private String email;
-
-    @Column(name = "mobile_phone_number", nullable = false, length = 20)
-    private String mobilePhoneNumber;
-
-    @Column(name = "email_confirmed", nullable = false)
-    private boolean emailConfirmed;
-
-    @Column(name = "mobile_phone_number_confirmed", nullable = false)
-    private boolean mobilePhoneNumberConfirmed;
-
-    // Default constructor
-    public UserEntity() {
-    }
-
-    // Complete constructor
-    public UserEntity(final UUID id, final DocumentTypeEntity documentType, final String documentNumber,
-                      final String firstName, final String secondName, final String firstSurname,
-                      final String secondSurname, final CityEntity residenceCity, final String email,
-                      final String mobilePhoneNumber, final boolean emailConfirmed,
-                      final boolean mobilePhoneNumberConfirmed) {
+    public UserEntity(UUID id, DocumentTypeEntity documentType, String documentNumber, String firstName, String secondName,
+                      String firstSurname, String secondSurname, CityEntity residenceCity, String email,
+                      String mobilePhoneNumber, boolean emailConfirmed, boolean mobilePhoneNumberConfirmed) {
         this.id = id;
         this.documentType = documentType;
         this.documentNumber = documentNumber;
@@ -73,12 +37,11 @@ public class UserEntity {
         this.mobilePhoneNumberConfirmed = mobilePhoneNumberConfirmed;
     }
 
-    // Getters and Setters
     public UUID getId() {
         return id;
     }
 
-    public void setId(final UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -86,7 +49,7 @@ public class UserEntity {
         return documentType;
     }
 
-    public void setDocumentType(final DocumentTypeEntity documentType) {
+    public void setDocumentType(DocumentTypeEntity documentType) {
         this.documentType = documentType;
     }
 
@@ -94,7 +57,7 @@ public class UserEntity {
         return documentNumber;
     }
 
-    public void setDocumentNumber(final String documentNumber) {
+    public void setDocumentNumber(String documentNumber) {
         this.documentNumber = documentNumber;
     }
 
@@ -102,7 +65,7 @@ public class UserEntity {
         return firstName;
     }
 
-    public void setFirstName(final String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
@@ -110,7 +73,7 @@ public class UserEntity {
         return secondName;
     }
 
-    public void setSecondName(final String secondName) {
+    public void setSecondName(String secondName) {
         this.secondName = secondName;
     }
 
@@ -118,7 +81,7 @@ public class UserEntity {
         return firstSurname;
     }
 
-    public void setFirstSurname(final String firstSurname) {
+    public void setFirstSurname(String firstSurname) {
         this.firstSurname = firstSurname;
     }
 
@@ -126,7 +89,7 @@ public class UserEntity {
         return secondSurname;
     }
 
-    public void setSecondSurname(final String secondSurname) {
+    public void setSecondSurname(String secondSurname) {
         this.secondSurname = secondSurname;
     }
 
@@ -134,7 +97,7 @@ public class UserEntity {
         return residenceCity;
     }
 
-    public void setResidenceCity(final CityEntity residenceCity) {
+    public void setResidenceCity(CityEntity residenceCity) {
         this.residenceCity = residenceCity;
     }
 
@@ -142,7 +105,7 @@ public class UserEntity {
         return email;
     }
 
-    public void setEmail(final String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -150,7 +113,7 @@ public class UserEntity {
         return mobilePhoneNumber;
     }
 
-    public void setMobilePhoneNumber(final String mobilePhoneNumber) {
+    public void setMobilePhoneNumber(String mobilePhoneNumber) {
         this.mobilePhoneNumber = mobilePhoneNumber;
     }
 
@@ -158,7 +121,7 @@ public class UserEntity {
         return emailConfirmed;
     }
 
-    public void setEmailConfirmed(final boolean emailConfirmed) {
+    public void setEmailConfirmed(boolean emailConfirmed) {
         this.emailConfirmed = emailConfirmed;
     }
 
@@ -166,7 +129,20 @@ public class UserEntity {
         return mobilePhoneNumberConfirmed;
     }
 
-    public void setMobilePhoneNumberConfirmed(final boolean mobilePhoneNumberConfirmed) {
+    public void setMobilePhoneNumberConfirmed(boolean mobilePhoneNumberConfirmed) {
         this.mobilePhoneNumberConfirmed = mobilePhoneNumberConfirmed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
