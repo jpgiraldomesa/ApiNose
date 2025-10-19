@@ -8,7 +8,6 @@ import co.ed.uco.nose.business.business.impl.UserBusinessImpl;
 import co.ed.uco.nose.business.facade.UserFacade;
 import co.ed.uco.nose.crosscuting.exception.NoseException;
 import co.ed.uco.nose.data.dao.factory.FactoryDAO;
-import co.ed.uco.nose.data.dao.factory.FactoryEnum;
 import co.ed.uco.nose.dto.UserDTO;
 
 public final class UserFacadeImpl implements UserFacade {
