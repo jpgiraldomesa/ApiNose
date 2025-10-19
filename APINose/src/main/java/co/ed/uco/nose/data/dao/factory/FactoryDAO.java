@@ -19,6 +19,8 @@ import co.ed.uco.nose.data.dao.factory.postgresql.PostgreSqlDAOFactory;
  */
 public abstract class FactoryDAO {
     
+	protected static FactoryEnum factory = FactoryEnum.POSTGRESQL;
+	
     protected Connection connection;
     
     /**
@@ -26,13 +28,13 @@ public abstract class FactoryDAO {
      * @param factoryEnum El tipo de fábrica (e.g., POSTGRESQL).
      * @return Instancia de FactoryDAO correspondiente.
      */
-    public static FactoryDAO getFactory(FactoryEnum factoryEnum) {
-        switch (factoryEnum) {
+    public static FactoryDAO getFactory() {
+        switch (factory) {
             case POSTGRESQL:
                 return new PostgreSqlDAOFactory();
             default:
                 final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
-                final String technicalMessage = "Fábrica DAO no soportada para el tipo especificado: " + factoryEnum;
+                final String technicalMessage = "Fábrica DAO no soportada para el tipo especificado: ";
                 throw NoseException.create(new IllegalArgumentException(), userMessage, technicalMessage);
         }
     }

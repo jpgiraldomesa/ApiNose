@@ -15,7 +15,7 @@ public final class UserFacadeImpl implements UserFacade {
 	
 	@Override
 	public void registrarNewUserInformation(UserDTO userDTO) {
-		var factoryDAO = FactoryDAO.getFactory(FactoryEnum.POSTGRESQL);
+		var factoryDAO = FactoryDAO.getFactory();
 		var business = new UserBusinessImpl(factoryDAO);
 		
 		

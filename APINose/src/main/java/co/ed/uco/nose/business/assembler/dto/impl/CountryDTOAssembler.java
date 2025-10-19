@@ -15,7 +15,7 @@ public final class CountryDTOAssembler implements DTOAssembler<CountryDTO, Count
 	private CountryDTOAssembler() {	
 	}
 	
-	public static DTOAssembler<CountryDTO, CountryDomain> getCoutryDTOAssembler() {
+	public static DTOAssembler<CountryDTO, CountryDomain> getCountryDTOAssembler() {
 		return INSTANCE;
 	}
 	

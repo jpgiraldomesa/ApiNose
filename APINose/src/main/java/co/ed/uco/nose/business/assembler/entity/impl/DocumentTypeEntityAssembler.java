@@ -1,3 +1,4 @@
+
 package co.ed.uco.nose.business.assembler.entity.impl;
 
 import java.util.List;

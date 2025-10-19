@@ -1,5 +1,5 @@
 package co.ed.uco.nose.business.assembler.dto.impl;
-import static co.ed.uco.nose.business.assembler.dto.impl.CountryDTOAssembler.getCoutryDTOAssembler;
+import static co.ed.uco.nose.business.assembler.dto.impl.CountryDTOAssembler.getCountryDTOAssembler;
 
 import java.util.List;
 
@@ -22,15 +22,15 @@ public final class StateDTOAssembler implements DTOAssembler<StateDTO, StateDoma
 
 	@Override
 	public StateDTO toDTOFromDomain(StateDomain domain) {
-		var DomainTmp = ObjectHelper.getDefaultIfNull(domain, new StateDomain(UUIDHelper.getDefault()));
-		var coutryDTOTmp = getCoutryDTOAssembler().toDTOFromDomain(DomainTmp.getCountry());
-		return new StateDTO(DomainTmp.getId(), coutryDTOTmp, DomainTmp.getName());
+		var domainTmp = ObjectHelper.getDefaultIfNull(domain, new StateDomain(UUIDHelper.getDefault()));
+		var coutryDTOTmp = getCountryDTOAssembler().toDTOFromDomain(domainTmp.getCountry());
+		return new StateDTO(domainTmp.getId(), coutryDTOTmp, domainTmp.getName());
 	}
 
 	@Override
 	public StateDomain toDomainFromDTO(StateDTO dto) {
 		var dtoTmp = ObjectHelper.getDefaultIfNull(dto, new StateDTO());
-		var coutryDomainTmp = getCoutryDTOAssembler().toDomainFromDTO(dtoTmp.getCountry()); 
+		var coutryDomainTmp = getCountryDTOAssembler().toDomainFromDTO(dtoTmp.getCountry()); 
 		return new StateDomain(dtoTmp.getId(), dtoTmp.getName(), coutryDomainTmp);
 	}
 

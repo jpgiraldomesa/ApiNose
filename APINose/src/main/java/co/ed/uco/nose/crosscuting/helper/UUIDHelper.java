@@ -19,7 +19,7 @@ public final class UUIDHelper {
 	}
 	
 	//Retorna el valor por defecto
-	public static java.util.UUID getDefault() {
+	public static UUID getDefault() {
 		return getFromString(UUID_DEFAULT_AS_STRING);
 	}
 	
