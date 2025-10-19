@@ -21,18 +21,20 @@ public abstract class FactoryDAO {
     
     protected Connection connection;
     
+    
+    protected static FactoryEnum factory = FactoryEnum.POSTGRESQL;
     /**
      * Obtiene una instancia de fábrica basada en el enum especificado.
      * @param factoryEnum El tipo de fábrica (e.g., POSTGRESQL).
      * @return Instancia de FactoryDAO correspondiente.
      */
-    public static FactoryDAO getFactory(FactoryEnum factoryEnum) {
-        switch (factoryEnum) {
+    public static FactoryDAO getFactory() {
+        switch (factory) {
             case POSTGRESQL:
                 return new PostgreSqlDAOFactory();
             default:
                 final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent();
-                final String technicalMessage = "Fábrica DAO no soportada para el tipo especificado: " + factoryEnum;
+                final String technicalMessage = "Fábrica DAO no soportada para el tipo especificado: " + factory;
                 throw NoseException.create(new IllegalArgumentException(), userMessage, technicalMessage);
         }
     }
