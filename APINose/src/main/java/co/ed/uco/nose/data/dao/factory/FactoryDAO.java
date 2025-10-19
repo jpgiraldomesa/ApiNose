@@ -23,8 +23,6 @@ public abstract class FactoryDAO {
 	
     protected Connection connection;
     
-    
-    protected static FactoryEnum factory = FactoryEnum.POSTGRESQL;
     /**
      * Obtiene una instancia de fábrica basada en el enum especificado.
      * @param factoryEnum El tipo de fábrica (e.g., POSTGRESQL).
