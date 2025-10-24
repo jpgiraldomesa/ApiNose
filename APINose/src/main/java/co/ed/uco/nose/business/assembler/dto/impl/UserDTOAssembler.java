@@ -24,7 +24,7 @@ public final class UserDTOAssembler implements DTOAssembler<UserDTO, UserDomain>
 
 	@Override
 	public UserDTO toDTOFromDomain(UserDomain domain) {
-		var DomainTmp = ObjectHelper.getDefaultIfNull(domain, new UserDomain(UUIDHelper.getDefault()));
+		var DomainTmp = ObjectHelper.getDefault(domain, new UserDomain(UUIDHelper.getDefault()));
 		var cityDTOTmp = getCityDTOAssembler().toDTOFromDomain(DomainTmp.getResidenceCity());
 		var documentTypeDTOTmp = getDocumentTypeDTOAssembler().toDTOFromDomain(DomainTmp.getDocumentType());
 		return new UserDTO(DomainTmp.getId(), documentTypeDTOTmp, DomainTmp.getDocumentNumber(), DomainTmp.getFirstName(), DomainTmp.getSecondName(), DomainTmp.getFirstSurname(), 
@@ -34,7 +34,7 @@ public final class UserDTOAssembler implements DTOAssembler<UserDTO, UserDomain>
 
 	@Override
 	public UserDomain toDomainFromDTO(UserDTO dto) {
-		var dtoTmp = ObjectHelper.getDefaultIfNull(dto, new UserDTO());
+		var dtoTmp = ObjectHelper.getDefault(dto, new UserDTO());
 		var cityDomainTmp = getCityDTOAssembler().toDomainFromDTO(dtoTmp.getResidenceCity());
 		var documentTypeDomainTmp = getDocumentTypeDTOAssembler().toDomainFromDTO(dtoTmp.getDocumentType());
 		return new UserDomain(dtoTmp.getId(),  dtoTmp.getFirstName(), dtoTmp.getSecondName(), dtoTmp.getFirstSurname(), 

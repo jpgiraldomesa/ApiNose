@@ -25,7 +25,7 @@ public final class UUIDHelper {
 	
 	//Si el valor es nulo, retorna el valor por defecto
 	public UUID getDefault(final UUID value) {
-		return ObjectHelper.getDefaultIfNull(value, getDefault());
+		return ObjectHelper.getDefault(value, getDefault());
 	}
 	
 	//Si la cadena no es un UUID válido, retorna el valor por defecto

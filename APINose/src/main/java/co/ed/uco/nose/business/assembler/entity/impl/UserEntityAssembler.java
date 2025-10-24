@@ -23,7 +23,7 @@ public final class UserEntityAssembler implements EntityAssembler<UserEntity, Us
 
 	@Override
 	public UserEntity toEntityFromDomain(UserDomain domain) {
-		var DomainTmp = ObjectHelper.getDefaultIfNull(domain, new UserDomain(UUIDHelper.getDefault()));
+		var DomainTmp = ObjectHelper.getDefault(domain, new UserDomain(UUIDHelper.getDefault()));
 		var cityEntityTmp = getCityEntityAssembler().toEntityFromDomain(DomainTmp.getResidenceCity());
 		var documentTypeEntityTmp = getDocumentTypeEntityAssembler().toEntityFromDomain(DomainTmp.getDocumentType());
 		return new UserEntity(DomainTmp.getId(), documentTypeEntityTmp, DomainTmp.getDocumentNumber(), DomainTmp.getFirstName(), DomainTmp.getSecondName(), DomainTmp.getFirstSurname(), 
@@ -33,7 +33,7 @@ public final class UserEntityAssembler implements EntityAssembler<UserEntity, Us
 
 	@Override
 	public UserDomain toDomainFromEntity(UserEntity Entity) {
-		var EntityTmp = ObjectHelper.getDefaultIfNull(Entity, new UserEntity());
+		var EntityTmp = ObjectHelper.getDefault(Entity, new UserEntity());
 		var cityDomainTmp = getCityEntityAssembler().toDomainFromEntity(EntityTmp.getResidenceCity());
 		var documentTypeDomainTmp = getDocumentTypeEntityAssembler().toDomainFromEntity(EntityTmp.getDocumentType());
 		return new UserDomain(EntityTmp.getId(),  EntityTmp.getFirstName(), EntityTmp.getSecondName(), EntityTmp.getFirstSurname(), 

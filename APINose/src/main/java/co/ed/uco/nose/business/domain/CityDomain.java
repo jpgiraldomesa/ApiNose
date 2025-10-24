@@ -50,6 +50,6 @@ public final class CityDomain extends Domain {
 
     // Setter para el departamento, asegurando que no sea nulo
     public void setState(final StateDomain state) {
-        this.state = ObjectHelper.getDefaultIfNull(state, new StateDomain());
+        this.state = ObjectHelper.getDefault(state, new StateDomain());
     }
 }

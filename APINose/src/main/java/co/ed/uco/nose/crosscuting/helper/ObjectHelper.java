@@ -13,7 +13,7 @@ public final class ObjectHelper {
 	}
 	
 	//Si un objeto es nulo, retorna un valor por defecto
-	public static <O> O getDefaultIfNull(final O object, final O DefaultValue) {
+	public static <O> O getDefault(final O object, final O DefaultValue) {
 		return (isNull(object) ? DefaultValue : object);
 	}	
 }

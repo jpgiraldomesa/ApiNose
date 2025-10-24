@@ -52,16 +52,7 @@ public abstract class FactoryDAO {
      * @throws NoseException si la conexión es inválida o hay error SQLException.
      */
     public final void initializeTransaction() {
-        SqlConnectionHelper.validateConnection(connection);
-        SqlConnectionHelper.validateIfTransactionNotAlreadyInitiated(connection);  // Reutiliza la validación dedicada
-        
-        try {
-            connection.setAutoCommit(false);
-        } catch (final SQLException exception) {
-            var userMessage = MessagesEnum.USER_ERROR_TRANSACTION_INIT_FAILED.getContent();
-            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_TRANSACTION_INIT_FAILED.getContent();
-            throw NoseException.create(exception, userMessage, technicalMessage);
-        }
+        SqlConnectionHelper.initTransaction(connection);
     }
     
     /**
@@ -70,16 +61,7 @@ public abstract class FactoryDAO {
      * @throws NoseException si la conexión es inválida o hay error SQLException.
      */
     public final void commitTransaction() {
-        SqlConnectionHelper.validateConnection(connection);
-        SqlConnectionHelper.validateIfTransactionWasInitiated(connection);
-        
-        try {
-            connection.commit();
-        } catch (final SQLException exception) {
-            var userMessage = MessagesEnum.USER_ERROR_TRANSACTION_COMMIT_FAILED.getContent();
-            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_TRANSACTION_COMMIT_FAILED.getContent();
-            throw NoseException.create(exception, userMessage, technicalMessage);
-        }
+        SqlConnectionHelper.commitTransaction(connection);
     }
     
     /**
@@ -88,16 +70,7 @@ public abstract class FactoryDAO {
      * @throws NoseException si la conexión es inválida o hay error SQLException.
      */
     public final void rollbackTransaction() {
-        SqlConnectionHelper.validateConnection(connection);
-        SqlConnectionHelper.validateIfTransactionWasInitiated(connection);
-        
-        try {
-            connection.rollback();
-        } catch (final SQLException exception) {
-            var userMessage = MessagesEnum.USER_ERROR_TRANSACTION_ROLLBACK_FAILED.getContent();
-            var technicalMessage = MessagesEnum.TECHNICAL_ERROR_TRANSACTION_ROLLBACK_FAILED.getContent();
-            throw NoseException.create(exception, userMessage, technicalMessage);
-        }
+        SqlConnectionHelper.rollbackTransaction(connection);
     }
     
     /**
@@ -106,14 +79,6 @@ public abstract class FactoryDAO {
      * @throws NoseException si hay error SQLException.
      */
     public final void closeConnection() {
-        SqlConnectionHelper.validateConnection(connection);
-        
-        try {
-            connection.close();
-        } catch (final SQLException exception) {
-            final String userMessage = MessagesEnum.USER_ERROR_CONNECTION_CLOSE_FAILED.getContent();
-            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_CONNECTION_CLOSE_FAILED.getContent();
-            throw NoseException.create(exception, userMessage, technicalMessage);
-        }
+        SqlConnectionHelper.closeConnection(connection);
     }
 }

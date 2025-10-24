@@ -147,7 +147,7 @@ public final class UserDomain extends Domain {
 
 	// Si el tipo de documento es nulo, le asigna un valor por defecto
 	public void setDocumentType(final DocumentTypeDomain documentType) {
-		this.documentType = ObjectHelper.getDefaultIfNull(documentType, new DocumentTypeDomain());
+		this.documentType = ObjectHelper.getDefault(documentType, new DocumentTypeDomain());
 	}
 
 	// Si el número de documento es nulo, le asigna un valor por defecto y le quita los espacios en blanco al inicio y al final
@@ -157,7 +157,7 @@ public final class UserDomain extends Domain {
 
 	// Si la ciudad de residencia es nula, le asigna un valor por defecto
 	public void setResidenceCity(final CityDomain residenceCity) {
-		this.residenceCity = ObjectHelper.getDefaultIfNull(residenceCity, new CityDomain());
+		this.residenceCity = ObjectHelper.getDefault(residenceCity, new CityDomain());
 	}
 
 	// Si el número de teléfono móvil es nulo o inválido, le asigna un valor por defecto con validación

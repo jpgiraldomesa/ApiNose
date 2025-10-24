@@ -7,7 +7,7 @@ import co.ed.uco.nose.dto.UserDTO;
 
 public interface UserFacade {
 	
-	void registrarNewUserInformation(UserDTO userDTO);
+	void registerNewUserInformation(UserDTO userDTO);
 	
 	void dropUserInformationById(UUID id);
 	

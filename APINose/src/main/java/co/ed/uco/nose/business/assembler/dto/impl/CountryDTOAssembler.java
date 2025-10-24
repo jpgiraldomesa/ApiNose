@@ -21,13 +21,13 @@ public final class CountryDTOAssembler implements DTOAssembler<CountryDTO, Count
 	
 	@Override
 	public CountryDTO toDTOFromDomain(CountryDomain domain) {
-		var domainTmp = ObjectHelper.getDefaultIfNull(domain, new CountryDomain(UUIDHelper.getDefault()));
+		var domainTmp = ObjectHelper.getDefault(domain, new CountryDomain(UUIDHelper.getDefault()));
 		return new CountryDTO(domainTmp.getId(), domainTmp.getName());
 	}
 
 	@Override
 	public CountryDomain toDomainFromDTO(CountryDTO dto) {
-		var dtoTmp = ObjectHelper.getDefaultIfNull(dto, new CountryDTO());
+		var dtoTmp = ObjectHelper.getDefault(dto, new CountryDTO());
 		return new CountryDomain(dtoTmp.getId(), dtoTmp.getName());
 	}
 

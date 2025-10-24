@@ -23,7 +23,7 @@ public final class StatePostgreSqlDAO extends SqlConnectionHelper implements Sta
 
     @Override
     public List<StateEntity> findAll() {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final List<StateEntity> states = new ArrayList<>();
         final String sql = "SELECT * FROM departamento";
@@ -53,7 +53,7 @@ public final class StatePostgreSqlDAO extends SqlConnectionHelper implements Sta
 
     @Override
     public List<StateEntity> findByFilter(StateEntity filterEntity) {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final List<StateEntity> states = new ArrayList<>();
         final StringBuilder sql = new StringBuilder("SELECT * FROM departamento WHERE 1=1");
@@ -102,7 +102,7 @@ public final class StatePostgreSqlDAO extends SqlConnectionHelper implements Sta
 
     @Override
     public StateEntity findById(UUID id) {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final String sql = "SELECT * FROM departamento WHERE id = ?";
 

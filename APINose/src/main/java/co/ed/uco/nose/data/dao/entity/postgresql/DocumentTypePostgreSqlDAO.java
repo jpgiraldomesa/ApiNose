@@ -22,7 +22,7 @@ public final class DocumentTypePostgreSqlDAO extends SqlConnectionHelper impleme
 
     @Override
     public List<DocumentTypeEntity> findAll() {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final List<DocumentTypeEntity> documentTypes = new ArrayList<>();
         final String sql = "SELECT * FROM tipoidentificacion";
@@ -52,7 +52,7 @@ public final class DocumentTypePostgreSqlDAO extends SqlConnectionHelper impleme
 
     @Override
     public List<DocumentTypeEntity> findByFilter(DocumentTypeEntity filterEntity) {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final List<DocumentTypeEntity> documentTypes = new ArrayList<>();
         final StringBuilder sql = new StringBuilder("SELECT * FROM tipoidentificacion WHERE 1=1");
@@ -97,7 +97,7 @@ public final class DocumentTypePostgreSqlDAO extends SqlConnectionHelper impleme
 
     @Override
     public DocumentTypeEntity findById(UUID id) {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final String sql = "SELECT * FROM tipoidentificacion WHERE id = ?";
 

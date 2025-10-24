@@ -23,7 +23,7 @@ public final class CityPostgreSqlDAO extends SqlConnectionHelper implements City
 
     @Override
     public List<CityEntity> findAll() {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final List<CityEntity> cities = new ArrayList<>();
         final String sql = "SELECT * FROM ciudad";
@@ -53,7 +53,7 @@ public final class CityPostgreSqlDAO extends SqlConnectionHelper implements City
 
     @Override
     public List<CityEntity> findByFilter(CityEntity filterEntity) {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final List<CityEntity> cities = new ArrayList<>();
         final StringBuilder sql = new StringBuilder("SELECT * FROM ciudad WHERE 1=1");
@@ -102,7 +102,7 @@ public final class CityPostgreSqlDAO extends SqlConnectionHelper implements City
 
     @Override
     public CityEntity findById(UUID id) {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final String sql = "SELECT * FROM ciudad WHERE id = ?";
 

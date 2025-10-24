@@ -24,11 +24,11 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
 
     @Override
     public void create(final UserEntity entity) {
-        SqlConnectionHelper.validateConnection(getConnection());
-        SqlConnectionHelper.validateIfTransactionWasInitiated(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
+        SqlConnectionHelper.ensureTransactionIsStarted(getConnection());
 
         final StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO usuario (id, tipo_identificacion_id, numero_identificacion, primer_nombre, ");
+        sql.append("INSERT INTO public.usuario (id, tipo_identificacion_id, numero_identificacion, primer_nombre, ");
         sql.append("segundo_nombre, primer_apellido, segundo_apellido, ciudad_residencia_id, correo_electronico, ");
         sql.append("numero_telefono_movil, correo_electronico_confirmado, numero_telefono_movil_confirmado) ");
         sql.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -55,7 +55,7 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
 
     @Override
     public List<UserEntity> findAll() {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final List<UserEntity> users = new ArrayList<>();
         final String sql = "SELECT * FROM usuario";
@@ -85,7 +85,7 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
 
     @Override
     public List<UserEntity> findByFilter(UserEntity filterEntity) {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final List<UserEntity> users = new ArrayList<>();
         final StringBuilder sql = new StringBuilder("SELECT * FROM usuario WHERE 1=1");
@@ -150,9 +150,9 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
 
     @Override
     public UserEntity findById(UUID id) {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
-        final String sql = "SELECT * FROM usuario WHERE id = ?";
+        final String sql = "SELECT * FROM public.usuario WHERE id = ?";
 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql)) {
             try {
@@ -185,11 +185,11 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
 
     @Override
     public void update(UserEntity entity) {
-        SqlConnectionHelper.validateConnection(getConnection());
-        SqlConnectionHelper.validateIfTransactionWasInitiated(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
+        SqlConnectionHelper.ensureTransactionIsStarted(getConnection());
 
         final StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE usuario SET tipo_identificacion_id = ?, numero_identificacion = ?, primer_nombre = ?, ");
+        sql.append("UPDATE public.usuario SET tipo_identificacion_id = ?, numero_identificacion = ?, primer_nombre = ?, ");
         sql.append("segundo_nombre = ?, primer_apellido = ?, segundo_apellido = ?, ciudad_residencia_id = ?, ");
         sql.append("correo_electronico = ?, numero_telefono_movil = ?, correo_electronico_confirmado = ?, ");
         sql.append("numero_telefono_movil_confirmado = ? WHERE id = ?");
@@ -217,10 +217,10 @@ public final class UserPostgreSqlDAO extends SqlConnectionHelper implements User
 
     @Override
     public void delete(UUID id) {
-        SqlConnectionHelper.validateConnection(getConnection());
-        SqlConnectionHelper.validateIfTransactionWasInitiated(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
+        SqlConnectionHelper.ensureTransactionIsStarted(getConnection());
 
-        final String sql = "DELETE FROM usuario WHERE id = ?";
+        final String sql = "DELETE FROM public.usuario WHERE id = ?";
 
         try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql)) {
             try {

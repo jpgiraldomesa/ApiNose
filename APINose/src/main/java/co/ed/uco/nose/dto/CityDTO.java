@@ -20,6 +20,12 @@ public class CityDTO {
         this.name = name;
     }
 
+    public CityDTO(UUID id) {
+        this.id = id;
+        this.state = new StateDTO();
+        this.name = "";
+    }
+
     // Getters
     public UUID getId() {
         return id;

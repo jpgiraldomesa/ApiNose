@@ -22,13 +22,13 @@ public final class DocumentTypeEntityAssembler implements EntityAssembler<Docume
 	
 	@Override
 	public DocumentTypeEntity toEntityFromDomain(DocumentTypeDomain domain) {
-		var domainTmp = ObjectHelper.getDefaultIfNull(domain, new DocumentTypeDomain(UUIDHelper.getDefault()));
+		var domainTmp = ObjectHelper.getDefault(domain, new DocumentTypeDomain(UUIDHelper.getDefault()));
 		return new DocumentTypeEntity(domainTmp.getId(), domainTmp.getName());
 	}
 
 	@Override
 	public DocumentTypeDomain toDomainFromEntity(DocumentTypeEntity Entity) {
-		var entityTmp = ObjectHelper.getDefaultIfNull(Entity, new DocumentTypeEntity());
+		var entityTmp = ObjectHelper.getDefault(Entity, new DocumentTypeEntity());
 		return new DocumentTypeDomain(entityTmp.getId(), entityTmp.getName());
 	}
 

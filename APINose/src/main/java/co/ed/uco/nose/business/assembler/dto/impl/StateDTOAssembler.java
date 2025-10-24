@@ -22,14 +22,14 @@ public final class StateDTOAssembler implements DTOAssembler<StateDTO, StateDoma
 
 	@Override
 	public StateDTO toDTOFromDomain(StateDomain domain) {
-		var domainTmp = ObjectHelper.getDefaultIfNull(domain, new StateDomain(UUIDHelper.getDefault()));
+		var domainTmp = ObjectHelper.getDefault(domain, new StateDomain(UUIDHelper.getDefault()));
 		var coutryDTOTmp = getCountryDTOAssembler().toDTOFromDomain(domainTmp.getCountry());
 		return new StateDTO(domainTmp.getId(), coutryDTOTmp, domainTmp.getName());
 	}
 
 	@Override
 	public StateDomain toDomainFromDTO(StateDTO dto) {
-		var dtoTmp = ObjectHelper.getDefaultIfNull(dto, new StateDTO());
+		var dtoTmp = ObjectHelper.getDefault(dto, new StateDTO());
 		var coutryDomainTmp = getCountryDTOAssembler().toDomainFromDTO(dtoTmp.getCountry()); 
 		return new StateDomain(dtoTmp.getId(), dtoTmp.getName(), coutryDomainTmp);
 	}

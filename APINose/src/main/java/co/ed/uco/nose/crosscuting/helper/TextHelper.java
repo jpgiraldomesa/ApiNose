@@ -16,18 +16,18 @@ public final class TextHelper {
 
     // Retorna el valor por defecto si es nulo, con opción a trim
     public static String getDefault(final String value) {
-        return ObjectHelper.getDefaultIfNull(value, getDefault());
+        return ObjectHelper.getDefault(value, getDefault());
     }
 
     // Retorna el valor por defecto si es nulo o solo espacios, y aplica trim
     public static String getDefaultWithTrim(final String value) {
-        String trimmedValue = ObjectHelper.getDefaultIfNull(value, getDefault()).trim();
+        String trimmedValue = ObjectHelper.getDefault(value, getDefault()).trim();
         return trimmedValue.isEmpty() ? getDefault() : trimmedValue;
     }
 
     // Verifica si una cadena está vacía o contiene solo espacios en blanco
     public static boolean isEmpty(final String value) {
-        return ObjectHelper.getDefaultIfNull(value, getDefault()).trim().isEmpty();
+        return ObjectHelper.getDefault(value, getDefault()).trim().isEmpty();
     }
 
     // Verifica si una cadena es nula, vacía o contiene solo espacios en blanco

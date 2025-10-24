@@ -7,28 +7,30 @@ import java.sql.SQLException;
 import co.ed.uco.nose.crosscuting.exception.NoseException;
 import co.ed.uco.nose.crosscuting.messagescatalog.MessagesEnum;
 
-/**
- * Clase abstracta base para manejo de conexiones SQL, con validación automática de estado (nula, cerrada o error en validación).
- * Incluye métodos estáticos para transacciones, apertura y cierre de conexión. Extienda para DAOs específicos, inyectando la conexión validada.
- * Todos los mensajes de error se citan explícitamente desde MessagesEnum.
- */
+
 public abstract class SqlConnectionHelper {
-    
-    private final Connection connection;  // Final para inmutabilidad
-    
+
+    private Connection connection;
+
     protected SqlConnectionHelper(final Connection connection) {
-        this.connection = validateAndSetConnection(connection);
+        setConnection(connection);
     }
 
     protected Connection getConnection() {
         return connection;
     }
-    
+
+    private void setConnection(Connection connection) {
+
+        ensureConnectionIsNotNull(connection);
+
+        this.connection = connection;
+    }
     /**
      * Valida la conexión: lanza NoseException si es nula, cerrada o hay error en validación.
      * Cita mensajes del enum para conexión vacía, cerrada o error inesperado.
      */
-    public static void validateConnection(final Connection connection) {
+    public static void ensureConnectionIsNotNull(final Connection connection) {
         if (ObjectHelper.isNull(connection)) {
             final String userMessage = MessagesEnum.USER_ERROR_SQL_CONNECTION_IS_EMPTY.getContent();
             final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_IS_EMPTY.getContent();
@@ -49,7 +51,7 @@ public abstract class SqlConnectionHelper {
     }
     
     private Connection validateAndSetConnection(final Connection connection) {
-        validateConnection(connection);
+        ensureConnectionIsNotNull(connection);
         return connection;
     }
     
@@ -57,7 +59,9 @@ public abstract class SqlConnectionHelper {
      * Valida si la transacción fue iniciada (autoCommit == false). Lanza excepción citando mensajes del enum si no.
      * Útilse en DAOs antes de INSERT/UPDATE/DELETE para asegurar transacción activa.
      */
-    public static void validateIfTransactionWasInitiated(final Connection connection) {
+    public static void ensureTransactionIsStarted(final Connection connection) {
+
+
         try {
             if (connection.getAutoCommit()) {
                 final String userMessage = MessagesEnum.USER_ERROR_TRANSACTION_NOT_INITIATED.getContent();
@@ -92,7 +96,7 @@ public abstract class SqlConnectionHelper {
      * Inicia la transacción (setAutoCommit(false)). Valida conexión y estado previo, citando mensajes del enum.
      */
     public static void initTransaction(final Connection connection) {
-        validateConnection(connection);
+        ensureConnectionIsNotNull(connection);
         validateIfTransactionNotAlreadyInitiated(connection);
         
         try {
@@ -108,8 +112,8 @@ public abstract class SqlConnectionHelper {
      * Confirma la transacción (commit). Valida conexión y transacción iniciada, citando mensajes del enum.
      */
     public static void commitTransaction(final Connection connection) {
-        validateConnection(connection);
-        validateIfTransactionWasInitiated(connection);
+        ensureConnectionIsNotNull(connection);
+        ensureTransactionIsStarted(connection);
         
         try {
             connection.commit();
@@ -124,8 +128,8 @@ public abstract class SqlConnectionHelper {
      * Cancela la transacción (rollback). Valida conexión y transacción iniciada, citando mensajes del enum.
      */
     public static void rollbackTransaction(final Connection connection) {
-        validateConnection(connection);
-        validateIfTransactionWasInitiated(connection);
+        ensureConnectionIsNotNull(connection);
+        ensureTransactionIsStarted(connection);
         
         try {
             connection.rollback();
@@ -140,7 +144,7 @@ public abstract class SqlConnectionHelper {
      * Cierra la conexión. Valida que esté abierta, citando mensajes del enum.
      */
     public static void closeConnection(final Connection connection) {
-        validateConnection(connection);  // Asegurar que esté abierta antes de cerrar
+        ensureConnectionIsNotNull(connection);  // Asegurar que esté abierta antes de cerrar
         
         try {
             connection.close();
@@ -151,21 +155,9 @@ public abstract class SqlConnectionHelper {
         }
     }
     
-    // Métodos para apertura de conexión (estándar para PostgreSQL)
-    public static Connection openConnection(final String connectionString) {
-        try {
-            return DriverManager.getConnection(connectionString);
-        } catch (final SQLException exception) {
-            final String userMessage = MessagesEnum.USER_ERROR_CONNECTION_OPEN_FAILED.getContent();
-            final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_CONNECTION_OPEN_FAILED.getContent();
-            throw NoseException.create(exception, userMessage, technicalMessage);
-        }
-    }
-    
     public static Connection openConnection(final String url, final String user, final String password) {
         try {
-            final Connection connection = DriverManager.getConnection(url, user, password);
-            return connection;
+            return DriverManager.getConnection(url, user, password);
         } catch (final SQLException exception) {
             final String userMessage = MessagesEnum.USER_ERROR_CONNECTION_OPEN_FAILED.getContent();
             final String technicalMessage = MessagesEnum.TECHNICAL_ERROR_CONNECTION_OPEN_FAILED.getContent();

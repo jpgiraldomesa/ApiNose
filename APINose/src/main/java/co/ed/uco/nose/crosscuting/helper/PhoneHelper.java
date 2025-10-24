@@ -16,7 +16,7 @@ public final class PhoneHelper {
 
     // Retorna el valor por defecto si es nulo o inválido, con validación de formato
     public static String getDefaultWithValidation(final String phone) {
-        String trimmedPhone = ObjectHelper.getDefaultIfNull(phone, "").trim();
+        String trimmedPhone = ObjectHelper.getDefault(phone, "").trim();
         return (trimmedPhone.isEmpty() || !isValidPhone(trimmedPhone)) ? getDefault() : trimmedPhone;
     }
 

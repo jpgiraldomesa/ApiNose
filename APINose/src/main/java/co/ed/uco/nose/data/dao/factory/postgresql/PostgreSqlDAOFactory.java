@@ -1,6 +1,7 @@
 package co.ed.uco.nose.data.dao.factory.postgresql;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import co.ed.uco.nose.crosscuting.exception.NoseException;
 import co.ed.uco.nose.crosscuting.helper.SqlConnectionHelper;
@@ -28,58 +29,58 @@ public final class PostgreSqlDAOFactory extends FactoryDAO {
     protected Connection connection;
 
     public PostgreSqlDAOFactory() {
-        this.connection = null;  // Inicialización segura para evitar NullPointer
+        this.connection = null;
         openConnection();
     }
 
     @Override
+    protected void openConnection() {
+        final String url = "jdbc:postgresql://localhost:5432/DOO";
+        final String user = "postgres";
+        final String password = "1023";
+
+        try {
+            this.connection = SqlConnectionHelper.openConnection(url, user, password);
+            SqlConnectionHelper.ensureConnectionIsNotNull(connection);
+            System.out.println("Conexión a PostgreSQL ('Doo') abierta exitosamente.");  // Log para depuración
+        /*} catch (final SQLException exception) {
+            var userMessage = "MessagesEnum.USER_ERROR_SQL_CONNECTION_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent()";
+            var technicalMessage = "MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_SQL_EXCEPTION_VALIDATING_CONNECTION_STATUS.getContent()";
+            throw NoseException.create(exception, userMessage, technicalMessage);*/
+        } catch (final Exception exception) {
+            var userMessage = "MessagesEnum.USER_ERROR_SQL_CONNECTION_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent()";
+            var technicalMessage = "MessagesEnum.TECHNICAL_ERROR_SQL_CONNECTION_UNEXPECTED_ERROR_VALIDATING_CONNECTION_STATUS.getContent()";
+            throw NoseException.create(exception, userMessage, technicalMessage);
+        }
+    }
+
+    @Override
     public CityDAO getCityDAO() {
-       	SqlConnectionHelper.validateConnection(connection);
+       	SqlConnectionHelper.ensureConnectionIsNotNull(connection);
         return new CityPostgreSqlDAO(connection);
     }
 
     @Override
     public CountryDAO getCountryDAO() {
-    	SqlConnectionHelper.validateConnection(connection);
+    	SqlConnectionHelper.ensureConnectionIsNotNull(connection);
         return new CountryPostgreSqlDAO(connection);
     }
 
     @Override
     public DocumentTypeDAO getDocumentTypeDAO() {
-        SqlConnectionHelper.validateConnection(connection);
+        SqlConnectionHelper.ensureConnectionIsNotNull(connection);
         return new DocumentTypePostgreSqlDAO(connection);
     }
 
     @Override
     public StateDAO getStateDAO() {
-    	SqlConnectionHelper.validateConnection(connection);
+    	SqlConnectionHelper.ensureConnectionIsNotNull(connection);
         return new StatePostgreSqlDAO(connection);
     }
 
     @Override
     public UserDAO getUserDAO() {
-    	SqlConnectionHelper.validateConnection(connection);
+    	SqlConnectionHelper.ensureConnectionIsNotNull(connection);
         return new UserPostgreSqlDAO(connection);
-    }
-
-    @Override
-    protected void openConnection() {
-        final String url = "jdbc:postgresql://localhost:5432/Doo";
-        final String user = "postgres";
-        final String password = "1023";
-
-        try {
-            connection = SqlConnectionHelper.openConnection(url, user, password);
-            // Validación opcional post-apertura para asegurar estado inicial
-            SqlConnectionHelper.validateConnection(connection);
-            System.out.println("Conexión a PostgreSQL ('Doo') abierta exitosamente.");  // Log para depuración
-        } catch (NoseException exception) {
-            // Re-lanza la excepción personalizada
-            throw exception;
-        } catch (Exception exception) {
-            var userMessage = MessagesEnum.USER_ERROR_CONNECTION_OPEN_FAILED.getContent();
-            final String technicalMessage = "Error inesperado al abrir conexión: " + exception.getMessage();
-            throw NoseException.create(exception, userMessage, technicalMessage);
-        }
     }
 }

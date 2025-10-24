@@ -18,6 +18,11 @@ public class DocumentTypeDTO {
         this.name = name;
     }
 
+    public DocumentTypeDTO(UUID id) {
+        this.id = id;
+        this.name = "";
+    }
+
     // Getters
     public UUID getId() {
         return id;

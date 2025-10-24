@@ -21,13 +21,13 @@ public final class DocumentTypeDTOAssembler implements DTOAssembler<DocumentType
 	
 	@Override
 	public DocumentTypeDTO toDTOFromDomain(DocumentTypeDomain domain) {
-		var domainTmp = ObjectHelper.getDefaultIfNull(domain, new DocumentTypeDomain(UUIDHelper.getDefault()));
+		var domainTmp = ObjectHelper.getDefault(domain, new DocumentTypeDomain(UUIDHelper.getDefault()));
 		return new DocumentTypeDTO(domainTmp.getId(), domainTmp.getName());
 	}
 
 	@Override
 	public DocumentTypeDomain toDomainFromDTO(DocumentTypeDTO dto) {
-		var dtoTmp = ObjectHelper.getDefaultIfNull(dto, new DocumentTypeDTO());
+		var dtoTmp = ObjectHelper.getDefault(dto, new DocumentTypeDTO());
 		return new DocumentTypeDomain(dtoTmp.getId(), dtoTmp.getName());
 	}
 

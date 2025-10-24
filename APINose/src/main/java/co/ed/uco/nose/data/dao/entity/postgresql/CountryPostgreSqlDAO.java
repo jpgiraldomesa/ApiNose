@@ -22,7 +22,7 @@ public final class CountryPostgreSqlDAO extends SqlConnectionHelper implements C
 
     @Override
     public List<CountryEntity> findAll() {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final List<CountryEntity> countries = new ArrayList<>();
         final String sql = "SELECT * FROM pais";
@@ -52,7 +52,7 @@ public final class CountryPostgreSqlDAO extends SqlConnectionHelper implements C
 
     @Override
     public List<CountryEntity> findByFilter(CountryEntity filterEntity) {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final List<CountryEntity> countries = new ArrayList<>();
         final StringBuilder sql = new StringBuilder("SELECT * FROM pais WHERE 1=1");
@@ -97,7 +97,7 @@ public final class CountryPostgreSqlDAO extends SqlConnectionHelper implements C
 
     @Override
     public CountryEntity findById(UUID id) {
-        SqlConnectionHelper.validateConnection(getConnection());
+        SqlConnectionHelper.ensureConnectionIsNotNull(getConnection());
 
         final String sql = "SELECT * FROM pais WHERE id = ?";
 

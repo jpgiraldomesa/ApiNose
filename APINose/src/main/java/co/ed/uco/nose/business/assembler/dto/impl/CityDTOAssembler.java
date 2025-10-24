@@ -22,14 +22,14 @@ public final class CityDTOAssembler implements DTOAssembler<CityDTO, CityDomain>
 
 	@Override
 	public CityDTO toDTOFromDomain(CityDomain domain) {
-		var DomainTmp = ObjectHelper.getDefaultIfNull(domain, new CityDomain(UUIDHelper.getDefault()));
+		var DomainTmp = ObjectHelper.getDefault(domain, new CityDomain(UUIDHelper.getDefault()));
 		var stateDTOTmp = getStateDTOAssembler().toDTOFromDomain(DomainTmp.getState());
 		return new CityDTO(DomainTmp.getId(), stateDTOTmp , DomainTmp.getName());
 	}
 
 	@Override
 	public CityDomain toDomainFromDTO(CityDTO dto) {
-		var dtoTmp = ObjectHelper.getDefaultIfNull(dto, new CityDTO());
+		var dtoTmp = ObjectHelper.getDefault(dto, new CityDTO());
 		var stateDomainTmp = getStateDTOAssembler().toDomainFromDTO(dtoTmp.getState());
 		return new CityDomain(dtoTmp.getId(), dtoTmp.getName(), stateDomainTmp);
 	}

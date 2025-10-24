@@ -22,14 +22,14 @@ public final class CityEntityAssembler implements EntityAssembler<CityEntity, Ci
 
 	@Override
 	public CityEntity toEntityFromDomain(CityDomain domain) {
-		var DomainTmp = ObjectHelper.getDefaultIfNull(domain, new CityDomain(UUIDHelper.getDefault()));
+		var DomainTmp = ObjectHelper.getDefault(domain, new CityDomain(UUIDHelper.getDefault()));
 		var stateEntityTmp = getStateEntityAssembler().toEntityFromDomain(DomainTmp.getState());
 		return new CityEntity(DomainTmp.getId(), stateEntityTmp , DomainTmp.getName());
 	}
 
 	@Override
 	public CityDomain toDomainFromEntity(CityEntity Entity) {
-		var EntityTmp = ObjectHelper.getDefaultIfNull(Entity, new CityEntity());
+		var EntityTmp = ObjectHelper.getDefault(Entity, new CityEntity());
 		var stateDomainTmp = getStateEntityAssembler().toDomainFromEntity(EntityTmp.getState());
 		return new CityDomain(EntityTmp.getId(), EntityTmp.getName(), stateDomainTmp);
 	}

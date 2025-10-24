@@ -13,7 +13,7 @@ import co.ed.uco.nose.dto.UserDTO;
 public final class UserFacadeImpl implements UserFacade {
 	
 	@Override
-	public void registrarNewUserInformation(UserDTO userDTO) {
+	public void registerNewUserInformation(UserDTO userDTO) {
 		var factoryDAO = FactoryDAO.getFactory();
 		var business = new UserBusinessImpl(factoryDAO);
 		

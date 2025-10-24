@@ -22,14 +22,14 @@ public final class StateEntityAssembler implements EntityAssembler<StateEntity, 
 
 	@Override
 	public StateEntity toEntityFromDomain(StateDomain domain) {
-		var DomainTmp = ObjectHelper.getDefaultIfNull(domain, new StateDomain(UUIDHelper.getDefault()));
+		var DomainTmp = ObjectHelper.getDefault(domain, new StateDomain(UUIDHelper.getDefault()));
 		var coutryEntityTmp = getCoutryEntityAssembler().toEntityFromDomain(DomainTmp.getCountry());
 		return new StateEntity(DomainTmp.getId(), coutryEntityTmp, DomainTmp.getName());
 	}
 
 	@Override
 	public StateDomain toDomainFromEntity(StateEntity Entity) {
-		var EntityTmp = ObjectHelper.getDefaultIfNull(Entity, new StateEntity());
+		var EntityTmp = ObjectHelper.getDefault(Entity, new StateEntity());
 		var coutryDomainTmp = getCoutryEntityAssembler().toDomainFromEntity(EntityTmp.getCountry()); 
 		return new StateDomain(EntityTmp.getId(), EntityTmp.getName(), coutryDomainTmp);
 	}

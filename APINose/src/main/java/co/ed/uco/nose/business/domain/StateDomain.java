@@ -50,6 +50,6 @@ public final class StateDomain extends Domain {
 
     // Setter para el país, asegurando que no sea nulo
     public void setCountry(final CountryDomain country) {
-        this.country = ObjectHelper.getDefaultIfNull(country, new CountryDomain());
+        this.country = ObjectHelper.getDefault(country, new CountryDomain());
     }
 }

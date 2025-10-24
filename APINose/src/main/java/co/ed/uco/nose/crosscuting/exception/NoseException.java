@@ -17,36 +17,31 @@ public final class NoseException extends RuntimeException {
     private final Throwable rootException;
     private final String userMessage;
     private final String technicalMessage;
-    
+
     private NoseException(final Throwable rootException, final String userMessage, final String technicalMessage) {
-        super(TextHelper.getDefaultWithTrim(technicalMessage), ObjectHelper.getDefaultIfNull(rootException, new Exception()));
-        this.rootException = ObjectHelper.getDefaultIfNull(rootException, new Exception());
+        super(TextHelper.getDefaultWithTrim(technicalMessage), ObjectHelper.getDefault(rootException, new Exception()));
+        this.rootException = ObjectHelper.getDefault(rootException, new Exception());
         this.userMessage = TextHelper.getDefaultWithTrim(userMessage);
         this.technicalMessage = TextHelper.getDefaultWithTrim(technicalMessage);
     }
-    
+
     // Fábricas estáticas para creación
     public static NoseException create(final String userMessage) {
         return new NoseException(new Exception(), userMessage, userMessage);
     }
-    
+
     public static NoseException create(final String userMessage, final String technicalMessage) {
         return new NoseException(new Exception(), userMessage, technicalMessage);
     }
-    
+
     public static NoseException create(final Throwable rootException, final String userMessage, final String technicalMessage) {
         return new NoseException(rootException, userMessage, technicalMessage);
     }
-    
-    // Getters públicos para acceso
-    public Throwable getRootException() {
-        return rootException;
-    }
-    
+
     public String getUserMessage() {
         return userMessage;
     }
-    
+
     public String getTechnicalMessage() {
         return technicalMessage;
     }
